@@ -20,5 +20,20 @@ describe('Mock Reduce Test', function() {
 			mockReduce.run();
 			expect(mockReduce.map.calls.count()).toEqual(5);
 	    });
+
+		it('only uses the test data once', function() {
+			var mockReduce = new MockReduce();
+			spyOn(mockReduce, 'map').and.callThrough();
+
+			var mockData = [
+				{first: "data"}
+			];
+
+			mockReduce.setNextTestData(mockData);
+			mockReduce.run();
+			expect(mockReduce.map.calls.count()).toEqual(1);
+			mockReduce.run();
+			expect(mockReduce.map.calls.count()).toEqual(1);
+		});
 	});
 });

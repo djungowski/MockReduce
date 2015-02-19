@@ -19,14 +19,12 @@ MockReduce.prototype.run = function (mapReduce) {
 
 	this._mappedData = [];
 	for (var i in testData) {
-		(function() {
-			window.emit = function(key, value) {
-				me.emit(key, value);
-			};
+		window.emit = function(key, value) {
+			me.emit(key, value);
+		};
 
-			mapReduce.map.apply(testData[i]);
-			window.emit = undefined;
-		})();
+		mapReduce.map.apply(testData[i]);
+		window.emit = undefined;
 	}
 
 	return this._mappedData;

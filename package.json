@@ -1,0 +1,29 @@
+{
+  "name": "MockReduce",
+  "version": "0.0.1",
+  "description": "A mock for mongodbs/mongoose's mapReduce in order to achieve testability",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:djungowski/MockReduce.git"
+  },
+  "keywords": [
+    "mongodb",
+    "mongoose",
+    "mapreduce",
+    "mock",
+    "mocking",
+    "test",
+    "tests",
+    "testing"
+  ],
+  "author": "Dominik Jungowski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/djungowski/MockReduce/issues"
+  },
+  "homepage": "https://github.com/djungowski/MockReduce"
+}

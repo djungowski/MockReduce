@@ -43,5 +43,40 @@ describe('Mock Reduce Test', function() {
 			this.mockReduce.run(mapReduce);
 			expect(mapReduce.map.calls.count()).toEqual(1);
 		});
+
+		it('maps the data', function() {
+		    var mapReduce = {
+				map: function() {
+					emit(42, this.first)
+				}
+			};
+			var mockData = [
+				{first: 'foo'},
+				{first: 'bar'}
+			];
+			var expectedMappedData = [
+				{"_id": 42, value: "foo"},
+				{"_id": 42, value: "bar"}
+			];
+
+			this.mockReduce.setNextTestData(mockData);
+			var actualMappedData = this.mockReduce.run(mapReduce);
+			expect(actualMappedData).toEqual(expectedMappedData);
+		});
+	});
+
+	describe('emit', function() {
+	    it('returns what is put into it as an object', function() {
+			var key = 1337;
+			var value = {
+				Banana: "Stand"
+			};
+	        var expected = {
+				"_id": key,
+				"value": value
+			};
+			var actual = this.mockReduce.emit(key, value);
+			expect(actual).toEqual(expected);
+	    });
 	});
 });

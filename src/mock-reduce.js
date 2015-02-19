@@ -12,13 +12,9 @@ MockReduce.prototype.getAndEmptyNextTestData = function () {
 	return nextTestData
 };
 
-MockReduce.prototype.run = function () {
+MockReduce.prototype.run = function (mapReduce) {
 	var testData = this.getAndEmptyNextTestData();
 	for (var key in testData) {
-		this.map();
+		mapReduce.map()
 	}
-};
-
-MockReduce.prototype.map = function () {
-
 };

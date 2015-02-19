@@ -3,10 +3,16 @@ describe('Mock Reduce Test', function() {
         expect(MockReduce).not.toBeUndefined();
     });
 
+	beforeEach(function() {
+	    this.mockReduce = new MockReduce();
+	});
+
 	describe('#map', function() {
 	    it('is called for every element of the data set', function() {
-	        var mockReduce = new MockReduce();
-			spyOn(mockReduce, 'map').and.callThrough();
+			var mapReduce = {
+				map: function() {}
+			};
+			spyOn(mapReduce, 'map').and.callThrough();
 
 			var mockData = [
 				{first: "data"},
@@ -16,24 +22,26 @@ describe('Mock Reduce Test', function() {
 				{fifth: "data"}
 			];
 
-			mockReduce.setNextTestData(mockData);
-			mockReduce.run();
-			expect(mockReduce.map.calls.count()).toEqual(5);
+			this.mockReduce.setNextTestData(mockData);
+			this.mockReduce.run(mapReduce);
+			expect(mapReduce.map.calls.count()).toEqual(5);
 	    });
 
 		it('only uses the test data once', function() {
-			var mockReduce = new MockReduce();
-			spyOn(mockReduce, 'map').and.callThrough();
+			var mapReduce = {
+				map: function() {}
+			};
+			spyOn(mapReduce, 'map').and.callThrough();
 
 			var mockData = [
 				{first: "data"}
 			];
 
-			mockReduce.setNextTestData(mockData);
-			mockReduce.run();
-			expect(mockReduce.map.calls.count()).toEqual(1);
-			mockReduce.run();
-			expect(mockReduce.map.calls.count()).toEqual(1);
+			this.mockReduce.setNextTestData(mockData);
+			this.mockReduce.run(mapReduce);
+			expect(mapReduce.map.calls.count()).toEqual(1);
+			this.mockReduce.run(mapReduce);
+			expect(mapReduce.map.calls.count()).toEqual(1);
 		});
 	});
 });

@@ -32,6 +32,10 @@ MockReduce.prototype.run = function (mapReduce) {
 	return this._mappedData;
 };
 
+MockReduce.prototype.getMappedData = function () {
+	return this._mappedData;
+};
+
 MockReduce.prototype.emit = function (key, value) {
 	var mappedData = {
 		"_id": key,

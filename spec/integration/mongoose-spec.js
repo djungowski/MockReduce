@@ -58,15 +58,16 @@ describe('Mongoose Integration', function() {
 					}
 				};
 
-				model.mapReduce(mapReduce);
+				return model.mapReduce(mapReduce);
 			};
 
 			mockReduce.setNextTestData(testData);
 			var model = mongoose.model('Collection_Name', schema);
-			model.someMethodThatCallsMapReduce();
+			var result = model.someMethodThatCallsMapReduce();
 			expect(mockReduce.map.getEmits()).toEqual(emits);
 			expect(mockReduce.map.getMappedData()).toEqual(mappedData);
 			expect(mockReduce.reduce.getReducedData()).toEqual(reducedData);
+			expect(result).toEqual(reducedData);
 			mockReduce.uninstall();
 		});
 	});

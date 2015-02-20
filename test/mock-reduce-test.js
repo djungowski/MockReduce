@@ -44,40 +44,31 @@ describe('Mock Reduce Test', function() {
 			expect(mapReduce.map.calls.count()).toEqual(1);
 		});
 
-		it('maps the data', function() {
-		    var mapReduce = {
-				map: function() {
-					emit(42, this.first)
-				}
-			};
-			var mockData = [
-				{first: 'foo'},
-				{first: 'bar'}
-			];
-			var expectedMappedData = [
-				{"_id": 42, value: "foo"},
-				{"_id": 42, value: "bar"}
-			];
-
-			this.mockReduce.setNextTestData(mockData);
-			this.mockReduce.run(mapReduce);
-			var actualMappedData = this.mockReduce.getEmits();
-			expect(actualMappedData).toEqual(expectedMappedData);
-		});
-	});
-
-	describe('emit', function() {
-	    it('returns what is put into it as an object', function() {
-			var key = 1337;
-			var value = {
-				Banana: "Stand"
-			};
-	        var expected = {
-				"_id": key,
-				"value": value
-			};
-			var actual = this.mockReduce.emit(key, value);
-			expect(actual).toEqual(expected);
-	    });
+//		it('groups the data', function() {
+//		    var mapReduce = {
+//				map: function () {
+//					emit(42, this.value);
+//				}
+//			};
+//			var mockData = [
+//				{value: 'Cornballer'},
+//				{value: 'Uncle Father Oscar'},
+//				{value: 'Dead Dove DO NOT EAT'}
+//			];
+//			var mappedDataExpected = [
+//				{
+//					"_id": 42,
+//					"value": [
+//						'Cornballer',
+//						'Uncle Father Oscar',
+//						'Dead Dove DO NOT EAT'
+//					]
+//				}
+//			];
+//			this.mockReduce.setNextTestData(mockData);
+//			this.mockReduce.run(mapReduce);
+//			var mappedDataActual = this.mockReduce.getMappedData();
+//			expect(mappedDataActual).toEqual(mappedDataExpected);
+//		});
 	});
 });

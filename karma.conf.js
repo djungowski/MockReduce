@@ -15,7 +15,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'src/**/*.js',
+      'src/mock-reduce.js',
+      'src/map.js',
       'test/**/*.js'
     ],
 

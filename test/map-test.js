@@ -17,7 +17,7 @@ describe('Map tests', function () {
 			{value: 'Dead Dove DO NOT EAT'}
 		];
 
-		it('is called for every element of the data set', function() {
+		it('calls the map function for every element of the data set', function() {
 			var mapReduce = {
 				map: function() {}
 			};

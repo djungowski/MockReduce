@@ -17,6 +17,7 @@ module.exports = function(config) {
     files: [
       'src/mock-reduce.js',
       'src/map.js',
+      'src/reduce.js',
       'test/**/*.js'
     ],
 

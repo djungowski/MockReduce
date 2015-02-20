@@ -3,6 +3,10 @@ describe('Map tests', function () {
 	    this.map = new MockReduce.Map();
 	});
 
+	it('exists', function() {
+		expect(MockReduce.Map).not.toBeUndefined();
+	});
+
 	describe('#run', function() {
 		var map = function () {
 			emit(42, this.value);

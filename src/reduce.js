@@ -1,0 +1,1 @@
+MockReduce.Reduce = function() {};

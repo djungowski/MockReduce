@@ -75,9 +75,10 @@ MockReduce.prototype._getAndEmptyNextTestData = function () {
  * Run mock reduce for the provided map reduce definition
  *
  * @param mapReduce
- * @returns {*}
+ * @param doneCallback
+ * @returns {Array}
  */
-MockReduce.prototype.run = function (mapReduce) {
+MockReduce.prototype.run = function (mapReduce, doneCallback) {
 	var testData = this._getAndEmptyNextTestData();
 
 	if (testData == null) {
@@ -91,6 +92,10 @@ MockReduce.prototype.run = function (mapReduce) {
 		reducedData = this._reduce.run(reducedData, mapReduce.finalize);
 	}
 	this._scope.concealAll();
+
+	if (typeof doneCallback == 'function') {
+		doneCallback(null, reducedData);
+	}
 
 	return reducedData;
 };

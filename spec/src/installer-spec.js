@@ -1,7 +1,9 @@
 describe('Install spec', function () {
 	beforeEach(function() {
 	    this.installer = new MockReduce.Installer();
-		this.mockReduceMock = {};
+		this.mockReduceMock = {
+			mapReduce: function() {}
+		};
 	});
 
 	it('exists', function() {
@@ -71,10 +73,44 @@ describe('Install spec', function () {
 				expect(mongoDbMock.model).toBeUndefined();
 			});
 
-		    it('returns mockReduce when calling .model', function() {
+		    it('enriches the model when calling .model', function() {
+				var model = {
+					paths: {}
+				};
+				spyOn(this.mongooseMock, 'model').and.returnValue(model);
+
+				var expectedModel = {
+					paths: {},
+					mapReduce: jasmine.any(Function)
+				};
+
 				this.installer.install(this.mongooseMock, this.mockReduceMock);
-				expect(this.mongooseMock.model()).toBe(this.mockReduceMock);
+				expect(this.mongooseMock.model()).toEqual(expectedModel);
 		    });
+
+			it('calls the original method when calling .model', function () {
+				spyOn(this.mongooseMock, 'model').and.returnValue({});
+				var originalModel = this.mongooseMock.model;
+
+				this.installer.install(this.mongooseMock, this.mockReduceMock);
+				this.mongooseMock.model('Schema_Name', {}, 'Collection_Name', false);
+
+				expect(originalModel).toHaveBeenCalledWith('Schema_Name', {}, 'Collection_Name', false);
+			});
+
+			it('calls mapReduce with the correct arguments and returns its value', function() {
+				spyOn(this.mongooseMock, 'model').and.returnValue({});
+				spyOn(this.mockReduceMock, 'mapReduce').and.returnValue('some string');
+				this.installer.install(this.mongooseMock, this.mockReduceMock);
+				var model = this.mongooseMock.model('Schema_Name', {}, 'Collection_Name', false);
+				var mapReduce = {
+					map: function () {},
+					reduce: function() {}
+				};
+				var result = model.mapReduce(mapReduce);
+				expect(this.mockReduceMock.mapReduce).toHaveBeenCalledWith(mapReduce);
+				expect(result).toEqual('some string');
+			});
 		});
 	});
 

@@ -158,7 +158,7 @@ describe('Mock Reduce Test', function() {
 
 		beforeEach(function() {
 			spyOn(this.mapMock, 'run');
-			spyOn(this.reduceMock, 'run');
+			spyOn(this.reduceMock, 'run').and.returnValue('reduce.run did run');
 		});
 
 		describe('mongoose style', function() {
@@ -178,6 +178,12 @@ describe('Mock Reduce Test', function() {
 				this.mockReduce.setNextTestData(mockData);
 				this.mockReduce.mapReduce(mapReduce, callbackSpy.run);
 				expect(callbackSpy.run).toHaveBeenCalled();
+			});
+
+			it('returns the data', function() {
+				this.mockReduce.setNextTestData(mockData);
+				var result = this.mockReduce.mapReduce(mapReduce);
+				expect(result).toEqual('reduce.run did run');
 			});
 		});
 
@@ -238,8 +244,8 @@ describe('Mock Reduce Test', function() {
 	        var scope = new MockReduce.Scope();
 
 			var mockReduce = MockReduce.init();
-			expect(mockReduce._map).toEqual(map);
-			expect(mockReduce._reduce).toEqual(reduce);
+			expect(mockReduce.map).toEqual(map);
+			expect(mockReduce.reduce).toEqual(reduce);
 			expect(mockReduce._scope).toEqual(scope);
 	    });
 	});

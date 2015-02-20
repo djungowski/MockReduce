@@ -1,6 +1,6 @@
 MockReduce = function(map, reduce, scope) {
-	this._map = map;
-	this._reduce = reduce;
+	this.map = map;
+	this.reduce = reduce;
 	this._scope = scope;
 };
 
@@ -10,7 +10,7 @@ MockReduce = function(map, reduce, scope) {
  * @type {MockReduce.Map}
  * @private
  */
-MockReduce.prototype._map = null;
+MockReduce.prototype.map = null;
 
 /**
  * Instance of MockReduce.Reduce
@@ -18,7 +18,7 @@ MockReduce.prototype._map = null;
  * @type {MockReduce.Reduce}
  * @private
  */
-MockReduce.prototype._reduce = null;
+MockReduce.prototype.reduce = null;
 
 /**
  * Instance of MockReduce.Scope
@@ -86,10 +86,10 @@ MockReduce.prototype.run = function (mapReduce, doneCallback) {
 	}
 
 	this._scope.expose(mapReduce.scope);
-	var mappedData = this._map.run(testData, mapReduce.map);
-	var reducedData = this._reduce.run(mappedData, mapReduce.reduce);
+	var mappedData = this.map.run(testData, mapReduce.map);
+	var reducedData = this.reduce.run(mappedData, mapReduce.reduce);
 	if (typeof mapReduce.finalize == 'function') {
-		reducedData = this._reduce.run(reducedData, mapReduce.finalize);
+		reducedData = this.reduce.run(reducedData, mapReduce.finalize);
 	}
 	this._scope.concealAll();
 
@@ -101,11 +101,14 @@ MockReduce.prototype.run = function (mapReduce, doneCallback) {
 };
 
 MockReduce.prototype.mapReduce = function () {
+	var mapReduce,
+		doneCallback;
+
 	if (typeof arguments[0] == 'function') {
 		var options = arguments[2] || {};
-		var doneCallback = arguments[3];
+		doneCallback = arguments[3];
 
-		var mapReduce = {
+		mapReduce = {
 			map: arguments[0],
 			reduce: arguments[1]
 		};
@@ -117,11 +120,12 @@ MockReduce.prototype.mapReduce = function () {
 		if (options.scope != undefined) {
 			mapReduce.scope = options.scope;
 		}
-
-		this.run(mapReduce, doneCallback);
 	} else {
-		this.run(arguments[0], arguments[1]);
+		mapReduce = arguments[0];
+		doneCallback = arguments[1];
 	}
+
+	return this.run(mapReduce, doneCallback);
 };
 
 /**

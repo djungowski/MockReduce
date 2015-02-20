@@ -28,6 +28,11 @@ describe('Mongoose Integration', function() {
 			{"_id": 5, "value": 5}
 		];
 
+		var mappedData = [
+			{"_id": 5, value: [5, 5]},
+			{"_id": 42, value: [4, 8]}
+		];
+
 		it('runs mockReduce in a mongoose schema', function() {
 			mockReduce.install(mongoose);
 
@@ -41,7 +46,11 @@ describe('Mongoose Integration', function() {
 					map: function () {
 						emit(this.someId, this.value);
 					},
-					reduce: function() {}
+					reduce: function(key, values) {
+						return values.reduce(function(prev, current) {
+							return (prev || 0) + current;
+						});
+					}
 				};
 
 				model.mapReduce(mapReduce);
@@ -51,6 +60,7 @@ describe('Mongoose Integration', function() {
 			var model = mongoose.model('Collection_Name', schema);
 			model.someMethodThatCallsMapReduce();
 			expect(mockReduce.map.getEmits()).toEqual(emits);
+			expect(mockReduce.map.getMappedData()).toEqual(mappedData);
 			mockReduce.uninstall();
 		});
 	});

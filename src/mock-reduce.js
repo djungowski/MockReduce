@@ -104,13 +104,20 @@ MockReduce.prototype.mapReduce = function () {
 	if (typeof arguments[0] == 'function') {
 		var options = arguments[2] || {};
 		var doneCallback = arguments[3];
+
 		var mapReduce = {
 			map: arguments[0],
 			reduce: arguments[1]
 		};
+
 		if (options.finalize != undefined) {
 			mapReduce.finalize = options.finalize;
 		}
+
+		if (options.scope != undefined) {
+			mapReduce.scope = options.scope;
+		}
+
 		this.run(mapReduce, doneCallback);
 	} else {
 		this.run(arguments[0], arguments[1]);

@@ -212,6 +212,22 @@ describe('Mock Reduce Test', function() {
 				this.mockReduce.mapReduce(mapReduce.map, mapReduce.reduce, null, callbackSpy.run);
 				expect(callbackSpy.run).toHaveBeenCalled();
 			});
+
+			it('sets the scope vars', function() {
+				var options = {
+					scope: {
+						value: "unimportant"
+					}
+				};
+
+				spyOn(this.scopeMock, 'expose');
+				spyOn(this.scopeMock, 'concealAll');
+
+				this.mockReduce.setNextTestData(mockData);
+				this.mockReduce.mapReduce(mapReduce.map, mapReduce.reduce, options);
+				expect(this.scopeMock.expose).toHaveBeenCalledWith(options.scope);
+				expect(this.scopeMock.concealAll).toHaveBeenCalled();
+			});
 		});
 	});
 
@@ -232,7 +248,7 @@ describe('Mock Reduce Test', function() {
 		it('throws an exception if no installer is set', function() {
 			var me = this;
 			var spec = function() {
-				this.mockReduce.install();
+				me.mockReduce.install();
 			};
 			expect(spec).toThrow();
 		});

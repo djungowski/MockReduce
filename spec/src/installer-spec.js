@@ -53,5 +53,14 @@ describe('Install spec', function () {
 			expect(mongoDbMock.connect).toBe(originalConnect);
 			expect(mongoDbMock.createConnection).toBe(originalCreateConnection);
 		});
+
+		it('does not set createConnection to null if it is not defined', function() {
+			var mongoDbMock = {
+				connect: function() {}
+			};
+			this.installer.install(mongoDbMock);
+			this.installer.uninstall();
+			expect(mongoDbMock.createConnection).toBeUndefined();
+		});
 	});
 });

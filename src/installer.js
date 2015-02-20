@@ -17,5 +17,7 @@ MockReduce.Installer.prototype.install = function(connector) {
 
 MockReduce.Installer.prototype.uninstall = function () {
 	this._connector.connect = this._originalConnect;
-	this._connector.createConnection = this._originalCreateConnection;
+	if(this._originalCreateConnection != null) {
+		this._connector.createConnection = this._originalCreateConnection;
+	}
 };

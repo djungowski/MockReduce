@@ -16,7 +16,7 @@ module.exports = function (config) {
 			'src/scope.js',
 			'src/map.js',
 			'src/reduce.js',
-			'test/src/**/*.js'
+			'spec/src/**/*.js'
 		],
 
 

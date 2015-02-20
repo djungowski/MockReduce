@@ -9,25 +9,39 @@ describe('Install spec', function () {
 	});
 
 	describe('#install', function() {
-	    it('overloads connect of the provided object', function() {
-			var mongoDbMock = {
-				connect: function() {}
-			};
-			var originalConnect = mongoDbMock.connect;
-			this.installer.install(mongoDbMock, this.mockReduceMock);
-			expect(mongoDbMock.connect).not.toBe(originalConnect);
-	    });
+		describe('.connect', function() {
+			it('overloads connect of the provided object', function() {
+				var mongoDbMock = {
+					connect: function() {}
+				};
+				var originalConnect = mongoDbMock.connect;
+				this.installer.install(mongoDbMock, this.mockReduceMock);
+				expect(mongoDbMock.connect).not.toBe(originalConnect);
+			});
 
-		it('overloads connect and createConnection', function() {
-			var mongoDbMock = {
-				connect: function() {},
-				createConnection: function() {}
-			};
-			var originalConnect = mongoDbMock.connect;
-			var originalCreateConnection = mongoDbMock.createConnection;
-			this.installer.install(mongoDbMock, this.mockReduceMock);
-			expect(mongoDbMock.connect).not.toBe(originalConnect);
-			expect(mongoDbMock.createConnection).not.toBe(originalCreateConnection);
+			it('overloads connect and createConnection', function() {
+				var mongoDbMock = {
+					connect: function() {},
+					createConnection: function() {}
+				};
+				var originalConnect = mongoDbMock.connect;
+				var originalCreateConnection = mongoDbMock.createConnection;
+				this.installer.install(mongoDbMock, this.mockReduceMock);
+				expect(mongoDbMock.connect).not.toBe(originalConnect);
+				expect(mongoDbMock.createConnection).not.toBe(originalCreateConnection);
+			});
+
+		    it('returns a object with a .collection method which itself returns mockReduce', function() {
+		        var mongoDbMock = {
+					connect: function () {}
+				};
+				this.installer.install(mongoDbMock, this.mockReduceMock);
+				var actual = null;
+				mongoDbMock.connect('foo', function(err, db) {
+					actual = db;
+				});
+				expect(actual).toBe(this.mockReduceMock);
+		    });
 		});
 
 		describe('.model', function() {

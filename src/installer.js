@@ -43,7 +43,7 @@ MockReduce.Installer.prototype._originalModel = null;
  */
 MockReduce.Installer.prototype.install = function(connector, mockReduce) {
 	this._connector = connector;
-	this._installConnect();
+	this._installConnect(mockReduce);
 	this._installCreateConnection();
 	this._installModel(mockReduce);
 };
@@ -53,9 +53,11 @@ MockReduce.Installer.prototype.install = function(connector, mockReduce) {
  *
  * @private
  */
-MockReduce.Installer.prototype._installConnect = function () {
+MockReduce.Installer.prototype._installConnect = function (mockReduce) {
 	this._originalConnect = this._connector.connect;
-	this._connector.connect = function() {};
+	this._connector.connect = function(url, callback) {
+		callback(null, mockReduce);
+	};
 };
 
 /**
@@ -72,7 +74,7 @@ MockReduce.Installer.prototype._installCreateConnection = function () {
 
 /**
  * Install the .model method
- * 
+ *
  * @param mockReduce
  * @private
  */

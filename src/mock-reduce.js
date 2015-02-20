@@ -113,7 +113,7 @@ MockReduce.prototype.install = function (connector) {
 	if (this._installer == null) {
 		throw('No installer defined');
 	}
-	this._installer.install(connector);
+	this._installer.install(connector, this);
 };
 
 /**

@@ -1,3 +1,5 @@
+var mockReduce = require('../index.js');
+
 /**
  * @constructor
  */
@@ -32,7 +34,7 @@ MockReduce.Installer.prototype._originalCreateConnection = null;
  *
  * @param connector
  */
-MockReduce.Installer.prototype.install = function(connector) {
+MockReduce.Installer.prototype.install = function(connector, mockReduce) {
 	this._connector = connector;
 	this._originalConnect = connector.connect;
 	connector.connect = function() {};
@@ -41,6 +43,8 @@ MockReduce.Installer.prototype.install = function(connector) {
 		this._originalCreateConnection = connector.createConnection;
 		connector.createConnection = function() {};
 	}
+
+	connector.model = function() {};
 };
 
 /**

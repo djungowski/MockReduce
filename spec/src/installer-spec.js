@@ -1,6 +1,7 @@
 describe('Install spec', function () {
 	beforeEach(function() {
 	    this.installer = new MockReduce.Installer();
+		this.mockReduceMock = {};
 	});
 
 	it('exists', function() {
@@ -13,7 +14,7 @@ describe('Install spec', function () {
 				connect: function() {}
 			};
 			var originalConnect = mongoDbMock.connect;
-			this.installer.install(mongoDbMock);
+			this.installer.install(mongoDbMock, this.mockReduceMock);
 			expect(mongoDbMock.connect).not.toBe(originalConnect);
 	    });
 
@@ -24,9 +25,20 @@ describe('Install spec', function () {
 			};
 			var originalConnect = mongoDbMock.connect;
 			var originalCreateConnection = mongoDbMock.createConnection;
-			this.installer.install(mongoDbMock);
+			this.installer.install(mongoDbMock, this.mockReduceMock);
 			expect(mongoDbMock.connect).not.toBe(originalConnect);
 			expect(mongoDbMock.createConnection).not.toBe(originalCreateConnection);
+		});
+
+		it('overloads model', function() {
+		    var mongooseMock = {
+				connect: function() {},
+				model: function() {}
+			};
+
+			var originalModel = mongooseMock.model;
+			this.installer.install(mongooseMock, this.mockReduceMock);
+			expect(mongooseMock.model).not.toBe(originalModel);
 		});
 	});
 
@@ -36,7 +48,7 @@ describe('Install spec', function () {
 				connect: function() {}
 			};
 			var originalConnect = mongoDbMock.connect;
-			this.installer.install(mongoDbMock);
+			this.installer.install(mongoDbMock, this.mockReduceMock);
 			this.installer.uninstall();
 			expect(mongoDbMock.connect).toBe(originalConnect);
 	    });
@@ -48,7 +60,7 @@ describe('Install spec', function () {
 			};
 			var originalConnect = mongoDbMock.connect;
 			var originalCreateConnection = mongoDbMock.createConnection;
-			this.installer.install(mongoDbMock);
+			this.installer.install(mongoDbMock, this.mockReduceMock);
 			this.installer.uninstall();
 			expect(mongoDbMock.connect).toBe(originalConnect);
 			expect(mongoDbMock.createConnection).toBe(originalCreateConnection);
@@ -58,7 +70,7 @@ describe('Install spec', function () {
 			var mongoDbMock = {
 				connect: function() {}
 			};
-			this.installer.install(mongoDbMock);
+			this.installer.install(mongoDbMock, this.mockReduceMock);
 			this.installer.uninstall();
 			expect(mongoDbMock.createConnection).toBeUndefined();
 		});

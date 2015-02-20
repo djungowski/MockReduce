@@ -43,18 +43,44 @@ MockReduce.Installer.prototype._originalModel = null;
  */
 MockReduce.Installer.prototype.install = function(connector, mockReduce) {
 	this._connector = connector;
-	this._originalConnect = connector.connect;
-	connector.connect = function() {};
+	this._installConnect();
+	this._installCreateConnection();
+	this._installModel(mockReduce);
+};
 
-	if (connector.createConnection != undefined) {
-		this._originalCreateConnection = connector.createConnection;
-		connector.createConnection = function() {};
+/**
+ * Install the .connect method
+ *
+ * @private
+ */
+MockReduce.Installer.prototype._installConnect = function () {
+	this._originalConnect = this._connector.connect;
+	this._connector.connect = function() {};
+};
+
+/**
+ * Install the .createConnection method
+ *
+ * @private
+ */
+MockReduce.Installer.prototype._installCreateConnection = function () {
+	if (this._connector.createConnection != undefined) {
+		this._originalCreateConnection = this._connector.createConnection;
+		this._connector.createConnection = function() {};
 	}
+};
 
-	if (connector.model != undefined) {
-		this._originalModel = connector.model;
+/**
+ * Install the .model method
+ * 
+ * @param mockReduce
+ * @private
+ */
+MockReduce.Installer.prototype._installModel = function (mockReduce) {
+	if (this._connector.model != undefined) {
+		this._originalModel = this._connector.model;
 
-		connector.model = function () {
+		this._connector.model = function () {
 			return mockReduce;
 		}
 	}

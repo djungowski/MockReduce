@@ -4,11 +4,43 @@ MockReduce = function(map, reduce, scope) {
 	this._scope = scope;
 };
 
+/**
+ * Instance of MockReduce.Map
+ *
+ * @type {MockReduce.Map}
+ * @private
+ */
 MockReduce.prototype._map = null;
+
+/**
+ * Instance of MockReduce.Reduce
+ *
+ * @type {MockReduce.Reduce}
+ * @private
+ */
 MockReduce.prototype._reduce = null;
+
+/**
+ * Instance of MockReduce.Scope
+ *
+ * @type {MockReduce.Scope}
+ * @private
+ */
 MockReduce.prototype._scope = null;
+
+/**
+ * Data for the next MapReduce call
+ *
+ * @type {Array}
+ * @private
+ */
 MockReduce.prototype._nextTestData = null;
 
+/**
+ * Initialize a working MockReduce instance
+ *
+ * @returns {MockReduce}
+ */
 MockReduce.init = function () {
 	var map = new MockReduce.Map(new MockReduce.Scope());
 	var reduce = new MockReduce.Reduce();
@@ -16,16 +48,33 @@ MockReduce.init = function () {
 	return new MockReduce(map, reduce, scope);
 };
 
+/**
+ * Set the data for the next MapReduce call
+ *
+ * @param nextTestData
+ */
 MockReduce.prototype.setNextTestData = function (nextTestData) {
 	this._nextTestData = nextTestData;
 };
 
+/**
+ * Get the test data and empty it
+ *
+ * @returns {Array}
+ * @private
+ */
 MockReduce.prototype._getAndEmptyNextTestData = function () {
 	var nextTestData = this._nextTestData;
 	this._nextTestData = null;
 	return nextTestData
 };
 
+/**
+ * Run mock reduce for the provided map reduce definition
+ *
+ * @param mapReduce
+ * @returns {*}
+ */
 MockReduce.prototype.run = function (mapReduce) {
 	var testData = this._getAndEmptyNextTestData();
 

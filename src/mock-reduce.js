@@ -36,6 +36,8 @@ MockReduce.prototype._scope = null;
  */
 MockReduce.prototype._nextTestData = null;
 
+MockReduce.prototype._installer = null;
+
 /**
  * Initialize a working MockReduce instance
  *
@@ -91,4 +93,36 @@ MockReduce.prototype.run = function (mapReduce) {
 	this._scope.concealAll();
 
 	return reducedData;
+};
+
+/**
+ * Set an installer
+ *
+ * @param installer
+ */
+MockReduce.prototype.setInstaller = function(installer) {
+	this._installer = installer;
+};
+
+/**
+ * Run the installer#install method
+ *
+ * @param connector
+ */
+MockReduce.prototype.install = function (connector) {
+	if (this._installer == null) {
+		throw('No installer defined');
+	}
+	this._installer.install(connector);
+};
+
+/**
+ * Run the installer#uninstall method
+ *
+ */
+MockReduce.prototype.uninstall = function () {
+	if (this._installer == null) {
+		throw('No installer defined');
+	}
+	this._installer.uninstall();
 };

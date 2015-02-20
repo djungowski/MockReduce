@@ -144,4 +144,50 @@ describe('Mock Reduce Test', function() {
 			expect(mockReduce._scope).toEqual(scope);
 	    });
 	});
+
+	describe('#install', function() {
+		it('throws an exception if no installer is set', function() {
+			var me = this;
+			var spec = function() {
+				this.mockReduce.install();
+			};
+			expect(spec).toThrow();
+		});
+
+		it('calls the installer#install if present', function () {
+			var installerMock = {
+				install: function() {}
+			};
+			var connectorMock = {
+				connect: function() {}
+			};
+			spyOn(installerMock, 'install');
+			this.mockReduce.setInstaller(installerMock);
+			this.mockReduce.install(connectorMock);
+			expect(installerMock.install).toHaveBeenCalledWith(connectorMock);
+		})
+	});
+
+	describe('#uninstall', function() {
+		it('throws an exception if no installer is set', function() {
+			var me = this;
+			var spec = function() {
+				this.mockReduce.uninstall();
+			};
+			expect(spec).toThrow();
+		});
+
+		it('calls the installer#uninstall if present', function () {
+			var installerMock = {
+				uninstall: function() {}
+			};
+			var connectorMock = {
+				connect: function() {}
+			};
+			spyOn(installerMock, 'uninstall');
+			this.mockReduce.setInstaller(installerMock);
+			this.mockReduce.uninstall(connectorMock);
+			expect(installerMock.uninstall).toHaveBeenCalled();
+		})
+	});
 });

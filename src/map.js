@@ -1,8 +1,18 @@
+/**
+ * @param scope
+ * @constructor
+ */
 MockReduce.Map = function(scope) {
 	this._scope = scope;
 	this._resetState();
 };
 
+/**
+ * MockReduce.Scope instance
+ *
+ * @type {MockReduce.Scope}
+ * @private
+ */
 MockReduce.Map.prototype._scope = null;
 
 /**

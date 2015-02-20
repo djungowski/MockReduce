@@ -53,6 +53,17 @@ describe('Reduce tests', function() {
 				this.reduce.run(mockData, reduce);
 				expect(this.reduce.getReducedData()).toEqual(expected);
 		    });
+
+			it('has the .reduce functionality for value arrays', function () {
+				var reduce = function(key, values) {
+					return values.reduce(function(prev, current) {
+						return (prev || 0) + current;
+					});
+				};
+
+				this.reduce.run(mockData, reduce);
+				expect(this.reduce.getReducedData()).toEqual(expected);
+			});
 		});
 	});
 });

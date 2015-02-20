@@ -7,8 +7,8 @@ describe('Mock Reduce Test', function() {
 	    this.mockReduce = new MockReduce();
 	});
 
-	describe('#map', function() {
-	    it('is called for every element of the data set', function() {
+	describe('#run', function() {
+	    it('calls map for every element of the data set', function() {
 			var mapReduce = {
 				map: function() {}
 			};

@@ -57,16 +57,8 @@ MockReduce.Map.prototype._resetMappedData = function () {
  * @returns {Array}
  */
 MockReduce.Map.prototype.run = function (testData, mapFunction) {
-	var me = this;
-
 	this._resetState();
-
-	// Expose emit functionality for all map operations
-	this._scope.expose({
-		emit: function(key, value) {
-			me.emit(key, value);
-		}
-	});
+	this._exposeEmit();
 
 	for (var i in testData) {
 		if (!testData.hasOwnProperty(i)) {
@@ -77,10 +69,7 @@ MockReduce.Map.prototype.run = function (testData, mapFunction) {
 		// the provided map function
 		mapFunction.apply(testData[i]);
 	}
-
-	// Conceal emit
 	this._scope.concealAll();
-
 	return this.getMappedData();
 };
 
@@ -101,6 +90,21 @@ MockReduce.Map.prototype.emit = function (key, value) {
 	this._addMappedDataToItsIdGroup(mappedData);
 
 	return mappedData;
+};
+
+/**
+ * Expose emit functionality for all map operations
+ *
+ * @private
+ */
+MockReduce.Map.prototype._exposeEmit = function () {
+	var me = this;
+
+	this._scope.expose({
+		emit: function(key, value) {
+			me.emit(key, value);
+		}
+	});
 };
 
 /**

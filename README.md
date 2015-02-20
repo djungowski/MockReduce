@@ -83,7 +83,7 @@ describe('node-mongodb-native Test', function() {
 ```
 
 ## Available methods
-MockReduce stores almost every step of the map reduce step. Try one of the following methods:
+MockReduce stores almost every step of a map reduce operation. Try one of the following methods:
 ```javascript
 mockReduce.map.getEmits();
 mockReduce.map.getMappedData();

@@ -250,7 +250,7 @@ describe('Mock Reduce Test', function() {
 			var spec = function() {
 				me.mockReduce.install();
 			};
-			expect(spec).toThrow();
+			expect(spec).toThrow('No installer defined');
 		});
 
 		it('calls the installer#install if present', function () {
@@ -271,9 +271,9 @@ describe('Mock Reduce Test', function() {
 		it('throws an exception if no installer is set', function() {
 			var me = this;
 			var spec = function() {
-				this.mockReduce.uninstall();
+				me.mockReduce.uninstall();
 			};
-			expect(spec).toThrow();
+			expect(spec).toThrow('No installer defined');
 		});
 
 		it('calls the installer#uninstall if present', function () {

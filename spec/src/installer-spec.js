@@ -71,10 +71,30 @@ describe('Install spec', function () {
 				expect(mongoDbMock.model).toBeUndefined();
 			});
 
-		    it('returns mockReduce when calling .model', function() {
+		    it('enriches the model when calling .model', function() {
+				var model = {
+					paths: {}
+				};
+				spyOn(this.mongooseMock, 'model').and.returnValue(model);
+
+				var expectedModel = {
+					paths: {},
+					mapReduce: jasmine.any(Function)
+				};
+
 				this.installer.install(this.mongooseMock, this.mockReduceMock);
-				expect(this.mongooseMock.model()).toBe(this.mockReduceMock);
+				expect(this.mongooseMock.model()).toEqual(expectedModel);
 		    });
+
+			it('calls the original method when calling .model', function () {
+				spyOn(this.mongooseMock, 'model').and.returnValue({});
+				var originalModel = this.mongooseMock.model;
+
+				this.installer.install(this.mongooseMock, this.mockReduceMock);
+				this.mongooseMock.model('Schema_Name', {}, 'Collection_Name', false);
+
+				expect(originalModel).toHaveBeenCalledWith('Schema_Name', {}, 'Collection_Name', false);
+			});
 		});
 	});
 

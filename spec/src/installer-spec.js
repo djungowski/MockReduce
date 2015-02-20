@@ -98,17 +98,18 @@ describe('Install spec', function () {
 				expect(originalModel).toHaveBeenCalledWith('Schema_Name', {}, 'Collection_Name', false);
 			});
 
-			it('calls mapReduce with the correct arguments', function() {
+			it('calls mapReduce with the correct arguments and returns its value', function() {
 				spyOn(this.mongooseMock, 'model').and.returnValue({});
-				spyOn(this.mockReduceMock, 'mapReduce');
+				spyOn(this.mockReduceMock, 'mapReduce').and.returnValue('some string');
 				this.installer.install(this.mongooseMock, this.mockReduceMock);
 				var model = this.mongooseMock.model('Schema_Name', {}, 'Collection_Name', false);
 				var mapReduce = {
 					map: function () {},
 					reduce: function() {}
 				};
-				model.mapReduce(mapReduce);
+				var result = model.mapReduce(mapReduce);
 				expect(this.mockReduceMock.mapReduce).toHaveBeenCalledWith(mapReduce);
+				expect(result).toEqual('some string');
 			});
 		});
 	});

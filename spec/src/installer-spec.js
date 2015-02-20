@@ -102,5 +102,14 @@ describe('Install spec', function () {
 			this.installer.uninstall();
 			expect(mongooseMock.model).toBe(originalModel);
 		});
+
+		it('does not set model to null if it is not defined', function() {
+			var mongoDbMock = {
+				connect: function() {}
+			};
+			this.installer.install(mongoDbMock, this.mockReduceMock);
+			this.installer.uninstall();
+			expect(mongoDbMock.model).toBeUndefined();
+		});
 	});
 });

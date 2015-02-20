@@ -75,7 +75,8 @@ MockReduce.prototype._getAndEmptyNextTestData = function () {
  * Run mock reduce for the provided map reduce definition
  *
  * @param mapReduce
- * @returns {*}
+ * @param doneCallback
+ * @returns {Array}
  */
 MockReduce.prototype.run = function (mapReduce, doneCallback) {
 	var testData = this._getAndEmptyNextTestData();

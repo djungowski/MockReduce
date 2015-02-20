@@ -29,4 +29,16 @@ describe('Install spec', function () {
 			expect(mongoDbMock.createConnection).not.toBe(originalCreateConnection);
 		});
 	});
+
+	describe('#uninstall', function() {
+	    it('reinstalls the original connect', function() {
+			var mongoDbMock = {
+				connect: function() {}
+			};
+			var originalConnect = mongoDbMock.connect;
+			this.installer.install(mongoDbMock);
+			this.installer.uninstall();
+			expect(mongoDbMock.connect).toBe(originalConnect);
+	    });
+	});
 });

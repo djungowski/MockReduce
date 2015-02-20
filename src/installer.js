@@ -1,5 +1,3 @@
-var mockReduce = require('../index.js');
-
 /**
  * @constructor
  */
@@ -44,7 +42,9 @@ MockReduce.Installer.prototype.install = function(connector, mockReduce) {
 		connector.createConnection = function() {};
 	}
 
-	connector.model = function() {};
+	if (connector.model != undefined) {
+		connector.model = function () {}
+	}
 };
 
 /**

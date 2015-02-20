@@ -40,6 +40,15 @@ describe('Install spec', function () {
 			this.installer.install(mongooseMock, this.mockReduceMock);
 			expect(mongooseMock.model).not.toBe(originalModel);
 		});
+
+		it('does not set .model if .model is not present', function () {
+			var mongoDbMock = {
+				connect: function() {}
+			};
+			var originalConnect = mongoDbMock.connect;
+			this.installer.install(mongoDbMock, this.mockReduceMock);
+			expect(mongoDbMock.model).toBeUndefined();
+		});
 	});
 
 	describe('#uninstall', function() {

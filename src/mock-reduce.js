@@ -1,7 +1,7 @@
 MockReduce = function() {};
 
 MockReduce.prototype._nextTestData = null;
-MockReduce.prototype._mappedData = [];
+MockReduce.prototype._emits = [];
 
 MockReduce.prototype.setNextTestData = function (nextTestData) {
 	this._nextTestData = nextTestData;
@@ -17,7 +17,7 @@ MockReduce.prototype.run = function (mapReduce) {
 	var me = this;
 	var testData = this.getAndEmptyNextTestData();
 
-	this._mappedData = [];
+	this._emits = [];
 	for (var i in testData) {
 		window.emit = function(key, value) {
 			me.emit(key, value);
@@ -27,11 +27,11 @@ MockReduce.prototype.run = function (mapReduce) {
 		window.emit = undefined;
 	}
 
-	return this._mappedData;
+	return this._emits;
 };
 
-MockReduce.prototype.getMappedData = function () {
-	return this._mappedData;
+MockReduce.prototype.getEmits = function () {
+	return this._emits;
 };
 
 MockReduce.prototype.emit = function (key, value) {
@@ -40,7 +40,7 @@ MockReduce.prototype.emit = function (key, value) {
 		"value": value
 	};
 
-	this._mappedData.push(mappedData);
+	this._emits.push(mappedData);
 
 	return mappedData;
 };

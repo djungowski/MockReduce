@@ -61,7 +61,7 @@ describe('Mock Reduce Test', function() {
 
 			this.mockReduce.setNextTestData(mockData);
 			this.mockReduce.run(mapReduce);
-			var actualMappedData = this.mockReduce.getMappedData();
+			var actualMappedData = this.mockReduce.getEmits();
 			expect(actualMappedData).toEqual(expectedMappedData);
 		});
 	});

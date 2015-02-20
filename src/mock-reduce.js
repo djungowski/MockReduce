@@ -29,6 +29,10 @@ MockReduce.prototype._getAndEmptyNextTestData = function () {
 MockReduce.prototype.run = function (mapReduce) {
 	var testData = this._getAndEmptyNextTestData();
 
+	if (testData == null) {
+		return [];
+	}
+
 	this._scope.expose(mapReduce.scope);
 	var mappedData = this._map.run(testData, mapReduce.map);
 	var reducedData = this._reduce.run(mappedData, mapReduce.reduce);

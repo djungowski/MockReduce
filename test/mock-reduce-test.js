@@ -83,23 +83,31 @@ describe('Mock Reduce Test', function() {
 			expect(actual).toEqual(finalizedData);
 		});
 
-//		it('only uses the test data once', function() {
-//			var mapReduce = {
-//				map: function() {},
-//				reduce: function() {}
-//			};
-//			spyOn(mapReduce, 'map');
-//
-//			var mockData = [
-//				{first: "data"}
-//			];
-//
-//			this.mockReduce.setNextTestData(mockData);
-//			this.mockReduce.run(mapReduce);
-//			expect(mapReduce.map.calls.count()).toEqual(1);
-//			this.mockReduce.run(mapReduce);
-//			expect(mapReduce.map.calls.count()).toEqual(1);
-//		});
+		it('only uses the test data once, returns empty array if no testData is provided', function() {
+			var mapReduce = {
+				map: function() {},
+				reduce: function() {}
+			};
+			spyOn(this.mapMock, 'run');
+			spyOn(this.reduceMock, 'run');
+
+			var mockData = [
+				{first: "data"}
+			];
+
+			this.mockReduce.setNextTestData(mockData);
+			this.mockReduce.run(mapReduce);
+			expect(this.mapMock.run.calls.count()).toEqual(1);
+			expect(this.reduceMock.run.calls.count()).toEqual(1);
+
+			this.mapMock.run.calls.reset();
+			this.reduceMock.run.calls.reset();
+
+			var actual = this.mockReduce.run(mapReduce);
+			expect(this.mapMock.run.calls.count()).toEqual(0);
+			expect(this.reduceMock.run.calls.count()).toEqual(0);
+			expect(actual).toEqual([]);
+		});
 //
 //		it('exposes and conceals all given scope variables', function() {
 //			var mapReduce = {

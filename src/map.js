@@ -1,18 +1,27 @@
 MockReduce.Map = function() {
-	this._resetEmits();
+	this._resetState();
 };
 
 MockReduce.Map.prototype._emits = null;
-MockReduce.Map.prototype._mappedData = {};
+MockReduce.Map.prototype._mappedData = null;
+
+MockReduce.Map.prototype._resetState = function () {
+	this._resetEmits();
+	this._resetMappedData();
+};
 
 MockReduce.Map.prototype._resetEmits = function () {
 	this._emits = [];
 };
 
+MockReduce.Map.prototype._resetMappedData = function () {
+	this._mappedData = {};
+};
+
 MockReduce.Map.prototype.run = function (testData, mapFunction) {
 	var me = this;
 
-	this._resetEmits();
+	this._resetState();
 	for (var i in testData) {
 		if (!testData.hasOwnProperty(i)) {
 			continue;

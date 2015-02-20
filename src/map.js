@@ -32,7 +32,7 @@ MockReduce.Map.prototype.run = function (testData, mapFunction) {
 
 		mapFunction.apply(testData[i]);
 	}
-	window.emit = undefined;
+	delete window.emit;
 
 	return this.getMappedData();
 };

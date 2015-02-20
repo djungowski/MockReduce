@@ -26,6 +26,12 @@ describe('Map tests', function () {
 			expect(mapReduce.map.calls.count()).toEqual(3);
 		});
 
+		it('does not leave emit in the window scope', function () {
+			var map = function() {};
+			this.map.run(mockData, map);
+			expect(window.emit).toBeUndefined();
+		});
+
 		describe('data grouping', function() {
 			var mappedDataExpected = [
 				{

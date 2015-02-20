@@ -91,5 +91,16 @@ describe('Install spec', function () {
 			this.installer.uninstall();
 			expect(mongoDbMock.createConnection).toBeUndefined();
 		});
+
+		it('reinstalls the original model', function () {
+			var mongooseMock = {
+				connect: function() {},
+				model: function() {}
+			};
+			var originalModel = mongooseMock.model;
+			this.installer.install(mongooseMock, this.mockReduceMock);
+			this.installer.uninstall();
+			expect(mongooseMock.model).toBe(originalModel);
+		});
 	});
 });

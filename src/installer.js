@@ -28,9 +28,18 @@ MockReduce.Installer.prototype._originalConnect = null;
 MockReduce.Installer.prototype._originalCreateConnection = null;
 
 /**
+ * The original model() function of the connector
+ *
+ * @type {function}
+ * @private
+ */
+MockReduce.Installer.prototype._originalModel = null;
+
+/**
  * Install MockReduce for a MongoClient or Mongoose connector
  *
  * @param connector
+ * @param mockReduce
  */
 MockReduce.Installer.prototype.install = function(connector, mockReduce) {
 	this._connector = connector;
@@ -43,6 +52,8 @@ MockReduce.Installer.prototype.install = function(connector, mockReduce) {
 	}
 
 	if (connector.model != undefined) {
+		this._originalModel = connector.model;
+
 		connector.model = function () {
 			return mockReduce;
 		}
@@ -58,4 +69,5 @@ MockReduce.Installer.prototype.uninstall = function () {
 	if(this._originalCreateConnection != null) {
 		this._connector.createConnection = this._originalCreateConnection;
 	}
+	this._connector.model = this._originalModel;
 };

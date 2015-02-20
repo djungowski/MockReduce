@@ -12,9 +12,21 @@ describe('Install spec', function () {
 			var mongoDbMock = {
 				connect: function() {}
 			};
-			var originalConnect = mongoDbMock.connect();
+			var originalConnect = mongoDbMock.connect;
 			this.installer.install(mongoDbMock);
 			expect(mongoDbMock.connect).not.toBe(originalConnect);
 	    });
+
+		it('overloads connect and createConnection', function() {
+			var mongoDbMock = {
+				connect: function() {},
+				createConnection: function() {}
+			};
+			var originalConnect = mongoDbMock.connect;
+			var originalCreateConnection = mongoDbMock.createConnection;
+			this.installer.install(mongoDbMock);
+			expect(mongoDbMock.connect).not.toBe(originalConnect);
+			expect(mongoDbMock.createConnection).not.toBe(originalCreateConnection);
+		});
 	});
 });

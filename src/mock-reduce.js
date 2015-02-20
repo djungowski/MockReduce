@@ -19,6 +19,9 @@ MockReduce.prototype.run = function (mapReduce) {
 
 	this._emits = [];
 	for (var i in testData) {
+		if (!testData.hasOwnProperty(i)) {
+			continue;
+		}
 		window.emit = function(key, value) {
 			me.emit(key, value);
 		};

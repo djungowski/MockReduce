@@ -156,25 +156,51 @@ describe('Mock Reduce Test', function() {
 			finalize: function() {}
 		};
 
-		it('calls all the mocks since it simply wraps run when providing a mapReduce object', function() {
+		beforeEach(function() {
 			spyOn(this.mapMock, 'run');
 			spyOn(this.reduceMock, 'run');
-
-			this.mockReduce.setNextTestData(mockData);
-			this.mockReduce.mapReduce(mapReduce);
-			expect(this.mapMock.run).toHaveBeenCalled();
-			// finalize also calls reduce.run
-			expect(this.reduceMock.run.calls.count()).toEqual(2);
 		});
 
-		it('calls the callback', function () {
-			var callbackSpy = {
-				run: function() {}
-			};
-			spyOn(callbackSpy, 'run');
-			this.mockReduce.setNextTestData(mockData);
-			this.mockReduce.mapReduce(mapReduce, callbackSpy.run);
-			expect(callbackSpy.run).toHaveBeenCalled();
+		describe('mongoose style', function() {
+			it('calls all the mocks since it simply wraps run when providing a mapReduce object', function() {
+				this.mockReduce.setNextTestData(mockData);
+				this.mockReduce.mapReduce(mapReduce);
+				expect(this.mapMock.run.calls.count()).toEqual(1);
+				// finalize also calls reduce.run
+				expect(this.reduceMock.run.calls.count()).toEqual(2);
+			});
+
+			it('calls the callback', function () {
+				var callbackSpy = {
+					run: function() {}
+				};
+				spyOn(callbackSpy, 'run');
+				this.mockReduce.setNextTestData(mockData);
+				this.mockReduce.mapReduce(mapReduce, callbackSpy.run);
+				expect(callbackSpy.run).toHaveBeenCalled();
+			});
+		});
+
+		describe('native driver style', function() {
+			it('calls map and reduce', function () {
+				this.mockReduce.setNextTestData(mockData);
+				this.mockReduce.mapReduce(mapReduce.map, mapReduce.reduce);
+				expect(this.mapMock.run.calls.count()).toEqual(1);
+				// finalize also calls reduce.run
+				expect(this.reduceMock.run.calls.count()).toEqual(1);
+			});
+
+			it('calls map, reduce and finalize', function () {
+				var options = {
+					finalize: mapReduce.finalize
+				};
+
+				this.mockReduce.setNextTestData(mockData);
+				this.mockReduce.mapReduce(mapReduce.map, mapReduce.reduce, options);
+				expect(this.mapMock.run.calls.count()).toEqual(1);
+				// finalize also calls reduce.run
+				expect(this.reduceMock.run.calls.count()).toEqual(2);
+			});
 		});
 	});
 

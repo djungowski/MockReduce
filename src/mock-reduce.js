@@ -101,7 +101,19 @@ MockReduce.prototype.run = function (mapReduce, doneCallback) {
 };
 
 MockReduce.prototype.mapReduce = function () {
-	this.run(arguments[0], arguments[1]);
+	if (typeof arguments[0] == 'function') {
+		var options = arguments[2] || {};
+		var mapReduce = {
+			map: arguments[0],
+			reduce: arguments[1]
+		};
+		if (options.finalize != undefined) {
+			mapReduce.finalize = options.finalize;
+		}
+		this.run(mapReduce);
+	} else {
+		this.run(arguments[0], arguments[1]);
+	}
 };
 
 /**

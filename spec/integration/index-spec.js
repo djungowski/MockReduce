@@ -7,6 +7,9 @@ describe('index.js test', function () {
 		var scope = new MockReduce.Scope();
 		var expected = new MockReduce(map, reduce, scope);
 
+		var installer = new MockReduce.Installer();
+		expected.setInstaller(installer);
+
 		expect(mockReduce).toEqual(expected);
 	});
 });

@@ -1,6 +1,7 @@
 describe('Map tests', function () {
 	beforeEach(function() {
-	    this.map = new MockReduce.Map();
+		this.scopeMock = new MockReduce.Scope();
+	    this.map = new MockReduce.Map(this.scopeMock);
 	});
 
 	it('exists', function() {
@@ -26,9 +27,16 @@ describe('Map tests', function () {
 			expect(mapReduce.map.calls.count()).toEqual(3);
 		});
 
-		it('does not leave emit in the window scope', function () {
+		it('exposes and conceals emit in the window scope', function () {
+			spyOn(this.scopeMock, 'expose');
+			spyOn(this.scopeMock, 'concealAll');
+
 			var map = function() {};
 			this.map.run(mockData, map);
+
+			var me = this;
+			expect(this.scopeMock.expose).toHaveBeenCalledWith({emit: jasmine.any(Function)});
+			expect(this.scopeMock.concealAll).toHaveBeenCalled();
 			expect(window.emit).toBeUndefined();
 		});
 

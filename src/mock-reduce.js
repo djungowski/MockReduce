@@ -10,7 +10,7 @@ MockReduce.prototype._scope = null;
 MockReduce.prototype._nextTestData = null;
 
 MockReduce.init = function () {
-	var map = new MockReduce.Map();
+	var map = new MockReduce.Map(new MockReduce.Scope());
 	var reduce = new MockReduce.Reduce();
 	var scope = new MockReduce.Scope();
 	return new MockReduce(map, reduce, scope);

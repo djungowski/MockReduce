@@ -1,5 +1,5 @@
 {
-  "name": "MockReduce",
+  "name": "mock-reduce",
   "version": "0.0.1",
   "description": "A mock for mongodbs/mongoose's mapReduce in order to achieve testability",
   "main": "index.js",

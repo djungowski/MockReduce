@@ -101,11 +101,14 @@ MockReduce.prototype.run = function (mapReduce, doneCallback) {
 };
 
 MockReduce.prototype.mapReduce = function () {
+	var mapReduce,
+		doneCallback;
+
 	if (typeof arguments[0] == 'function') {
 		var options = arguments[2] || {};
-		var doneCallback = arguments[3];
+		doneCallback = arguments[3];
 
-		var mapReduce = {
+		mapReduce = {
 			map: arguments[0],
 			reduce: arguments[1]
 		};
@@ -117,11 +120,12 @@ MockReduce.prototype.mapReduce = function () {
 		if (options.scope != undefined) {
 			mapReduce.scope = options.scope;
 		}
-
-		this.run(mapReduce, doneCallback);
 	} else {
-		this.run(arguments[0], arguments[1]);
+		mapReduce = arguments[0];
+		doneCallback = arguments[1];
 	}
+
+	return this.run(mapReduce, doneCallback);
 };
 
 /**

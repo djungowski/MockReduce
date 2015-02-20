@@ -22,10 +22,10 @@ describe('Mongoose Integration', function() {
 		];
 
 		var emits = [
-			{"someId": 42, "value": 4},
-			{"someId": 5, "value": 5},
-			{"someId": 42, "value": 8},
-			{"someId": 5, "value": 5}
+			{"_id": 42, "value": 4},
+			{"_id": 5, "value": 5},
+			{"_id": 42, "value": 8},
+			{"_id": 5, "value": 5}
 		];
 
 		it('runs mockReduce in a mongoose schema', function() {
@@ -40,16 +40,17 @@ describe('Mongoose Integration', function() {
 				var mapReduce = {
 					map: function () {
 						emit(this.someId, this.value);
-					}
+					},
+					reduce: function() {}
 				};
 
 				model.mapReduce(mapReduce);
 			};
 
+			mockReduce.setNextTestData(testData);
 			var model = mongoose.model('Collection_Name', schema);
-
 			model.someMethodThatCallsMapReduce();
-
+			expect(mockReduce.map.getEmits()).toEqual(emits);
 			mockReduce.uninstall();
 		});
 	});

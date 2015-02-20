@@ -36,11 +36,16 @@ describe('Install spec', function () {
 					connect: function () {}
 				};
 				this.installer.install(mongoDbMock, this.mockReduceMock);
+				var actualDb = null;
+				var expectedDb = {
+					collection: jasmine.any(Function)
+				};
 				var actual = null;
 				mongoDbMock.connect('foo', function(err, db) {
-					actual = db;
+					actualDb = db;
 				});
-				expect(actual).toBe(this.mockReduceMock);
+				expect(actualDb).toEqual(expectedDb);
+				expect(actualDb.collection()).toBe(this.mockReduceMock);
 		    });
 		});
 

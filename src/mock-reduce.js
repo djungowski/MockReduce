@@ -100,6 +100,10 @@ MockReduce.prototype.run = function (mapReduce, doneCallback) {
 	return reducedData;
 };
 
+MockReduce.prototype.mapReduce = function () {
+	this.run(arguments[0], null);
+};
+
 /**
  * Set an installer
  *

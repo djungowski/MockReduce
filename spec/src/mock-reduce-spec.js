@@ -147,6 +147,25 @@ describe('Mock Reduce Test', function() {
 		});
 	});
 
+	describe('#mapReduce', function () {
+		var mockData = [{}];
+
+		it('calls all the mocks since it simply wraps run when providing a mapReduce object', function() {
+		    var mapReduce = {
+				map: function() {},
+				reduce: function() {},
+				finalize: function() {}
+			};
+			spyOn(this.mapMock, 'run');
+			spyOn(this.reduceMock, 'run');
+
+			this.mockReduce.setNextTestData(mockData);
+			this.mockReduce.mapReduce(mapReduce);
+			expect(this.mapMock.run).toHaveBeenCalled();
+			expect(this.reduceMock.run).toHaveBeenCalled();
+		});
+	});
+
 	describe('#init', function() {
 	    it('creates a scope object with map, mock and scope instances', function() {
 	        var map = new MockReduce.Map(new MockReduce.Scope());

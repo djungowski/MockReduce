@@ -131,4 +131,17 @@ describe('Mock Reduce Test', function() {
 			expect(this.scopeMock.concealAll).toHaveBeenCalled();
 		});
 	});
+
+	describe('#init', function() {
+	    it('creates a scope object with map, mock and scope instances', function() {
+	        var map = new MockReduce.Map();
+	        var reduce = new MockReduce.Reduce();
+	        var scope = new MockReduce.Scope();
+
+			var mockReduce = MockReduce.init();
+			expect(mockReduce._map).toEqual(map);
+			expect(mockReduce._reduce).toEqual(reduce);
+			expect(mockReduce._scope).toEqual(scope);
+	    });
+	});
 });

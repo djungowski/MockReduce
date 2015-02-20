@@ -1,9 +1,18 @@
-MockReduce.Map = function() {};
+MockReduce.Map = function() {
+	this._resetEmits();
+};
 
-MockReduce.Map.prototype._emits = [];
+MockReduce.Map.prototype._emits = null;
+MockReduce.Map.prototype._mappedData = {};
+
+MockReduce.Map.prototype._resetEmits = function () {
+	this._emits = [];
+};
 
 MockReduce.Map.prototype.run = function (testData, mapFunction) {
 	var me = this;
+
+	this._resetEmits();
 	for (var i in testData) {
 		if (!testData.hasOwnProperty(i)) {
 			continue;
@@ -23,7 +32,7 @@ MockReduce.Map.prototype.emit = function (key, value) {
 		"value": value
 	};
 	this._emits.push(mappedData);
-//	this._groupMappedData(mappedData);
+	this._groupMappedData(mappedData);
 
 	return mappedData;
 };
@@ -32,10 +41,17 @@ MockReduce.Map.prototype.getEmits = function () {
 	return this._emits;
 };
 
-MockReduce.prototype.getMappedData = function () {
-
+MockReduce.Map.prototype.getMappedData = function () {
+	var mappedData = this._mappedData;
+	return Object.keys(mappedData).map(function (key) {return mappedData[key]});
 };
 
-MockReduce.prototype._groupMappedData = function () {
-
+MockReduce.Map.prototype._groupMappedData = function (mappedData) {
+	if (this._mappedData[mappedData._id] == undefined) {
+		this._mappedData[mappedData._id] = {
+			"_id": mappedData._id,
+			"value": []
+		};
+	}
+	this._mappedData[mappedData._id].value.push(mappedData.value);
 };

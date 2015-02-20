@@ -20,15 +20,17 @@ MockReduce.prototype.run = function (mapReduce) {
 	var testData = this.getAndEmptyNextTestData();
 
 	this._emits = [];
-	for (var i in testData) {
-		if (!testData.hasOwnProperty(i)) {
-			continue;
-		}
-		window.emit = function(key, value) {
-			me.emit(key, value);
-		};
+	this._map.run(testData, mapReduce.map);
 
-		mapReduce.map.apply(testData[i]);
-		window.emit = undefined;
-	}
+//	for (var i in testData) {
+//		if (!testData.hasOwnProperty(i)) {
+//			continue;
+//		}
+//		window.emit = function(key, value) {
+//			me.emit(key, value);
+//		};
+//
+//		mapReduce.map.apply(testData[i]);
+//		window.emit = undefined;
+//	}
 };

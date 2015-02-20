@@ -43,32 +43,5 @@ describe('Mock Reduce Test', function() {
 			this.mockReduce.run(mapReduce);
 			expect(mapReduce.map.calls.count()).toEqual(1);
 		});
-
-//		it('groups the data', function() {
-//		    var mapReduce = {
-//				map: function () {
-//					emit(42, this.value);
-//				}
-//			};
-//			var mockData = [
-//				{value: 'Cornballer'},
-//				{value: 'Uncle Father Oscar'},
-//				{value: 'Dead Dove DO NOT EAT'}
-//			];
-//			var mappedDataExpected = [
-//				{
-//					"_id": 42,
-//					"value": [
-//						'Cornballer',
-//						'Uncle Father Oscar',
-//						'Dead Dove DO NOT EAT'
-//					]
-//				}
-//			];
-//			this.mockReduce.setNextTestData(mockData);
-//			this.mockReduce.run(mapReduce);
-//			var mappedDataActual = this.mockReduce.getMappedData();
-//			expect(mappedDataActual).toEqual(mappedDataExpected);
-//		});
 	});
 });

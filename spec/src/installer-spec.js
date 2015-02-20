@@ -1,7 +1,9 @@
 describe('Install spec', function () {
 	beforeEach(function() {
 	    this.installer = new MockReduce.Installer();
-		this.mockReduceMock = {};
+		this.mockReduceMock = {
+			mapReduce: function() {}
+		};
 	});
 
 	it('exists', function() {
@@ -94,6 +96,19 @@ describe('Install spec', function () {
 				this.mongooseMock.model('Schema_Name', {}, 'Collection_Name', false);
 
 				expect(originalModel).toHaveBeenCalledWith('Schema_Name', {}, 'Collection_Name', false);
+			});
+
+			it('calls mapReduce with the correct arguments', function() {
+				spyOn(this.mongooseMock, 'model').and.returnValue({});
+				spyOn(this.mockReduceMock, 'mapReduce');
+				this.installer.install(this.mongooseMock, this.mockReduceMock);
+				var model = this.mongooseMock.model('Schema_Name', {}, 'Collection_Name', false);
+				var mapReduce = {
+					map: function () {},
+					reduce: function() {}
+				};
+				model.mapReduce(mapReduce);
+				expect(this.mockReduceMock.mapReduce).toHaveBeenCalledWith(mapReduce);
 			});
 		});
 	});

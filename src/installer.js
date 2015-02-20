@@ -117,7 +117,7 @@ MockReduce.Installer.prototype._installModel = function (mockReduce) {
 		this._connector.model = function (name, schema, collection, skipInit) {
 			var model = me._originalModel.call(me._connector, name, schema, collection, skipInit);
 			model.mapReduce = function () {
-				mockReduce.mapReduce(arguments);
+				mockReduce.mapReduce.apply(mockReduce, arguments);
 			};
 			return model;
 		}

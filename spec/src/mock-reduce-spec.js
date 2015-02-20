@@ -238,8 +238,8 @@ describe('Mock Reduce Test', function() {
 	        var scope = new MockReduce.Scope();
 
 			var mockReduce = MockReduce.init();
-			expect(mockReduce._map).toEqual(map);
-			expect(mockReduce._reduce).toEqual(reduce);
+			expect(mockReduce.map).toEqual(map);
+			expect(mockReduce.reduce).toEqual(reduce);
 			expect(mockReduce._scope).toEqual(scope);
 	    });
 	});

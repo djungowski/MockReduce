@@ -43,6 +43,11 @@ describe('Reduce tests', function() {
 				expect(this.reduce.getReducedData()).toEqual(expected);
 			});
 
+			it('returns the data', function() {
+				var reducedData = this.reduce.run(mockData, reduce);
+				expect(reducedData).toEqual(expected);
+			});
+
 		    it('resets the reduced data after each run', function() {
 				this.reduce.run(mockData, reduce);
 				this.reduce.run(mockData, reduce);

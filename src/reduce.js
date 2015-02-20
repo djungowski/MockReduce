@@ -21,6 +21,8 @@ MockReduce.Reduce.prototype.run = function (testData, reduceFunction) {
 			"value": reduceFunction(id, testData[i].value)
 		});
 	}
+
+	return this.getReducedData();
 };
 
 MockReduce.Reduce.prototype.getReducedData = function () {

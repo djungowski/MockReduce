@@ -8,6 +8,14 @@ describe('Mock Reduce Test', function() {
 	});
 
 	describe('#run', function() {
+		var mockData = [
+			{claptrap: "data"},
+			{claptrap: "data"},
+			{claptrap: "data"},
+			{claptrap: "data"},
+			{claptrap: "data"}
+		];
+
 	    it('calls map and reduce for every element of the data set', function() {
 			var counter = 0;
 			var mapReduce = {
@@ -19,19 +27,31 @@ describe('Mock Reduce Test', function() {
 			spyOn(mapReduce, 'map').and.callThrough();
 			spyOn(mapReduce, 'reduce');
 
-			var mockData = [
-				{first: "data"},
-				{second: "data"},
-				{third: "data"},
-				{fourth: "data"},
-				{fifth: "data"}
-			];
-
 			this.mockReduce.setNextTestData(mockData);
 			this.mockReduce.run(mapReduce);
 			expect(mapReduce.map.calls.count()).toEqual(5);
 			expect(mapReduce.reduce.calls.count()).toEqual(5);
 	    });
+
+		it('calls map, reduce and finalize for every element of the data set', function () {
+			var counter = 0;
+			var mapReduce = {
+				map: function() {
+					emit(counter++, this.claptrap);
+				},
+				reduce: function() {},
+				finalize: function() {}
+			};
+			spyOn(mapReduce, 'map').and.callThrough();
+			spyOn(mapReduce, 'reduce');
+			spyOn(mapReduce, 'finalize');
+
+			this.mockReduce.setNextTestData(mockData);
+			this.mockReduce.run(mapReduce);
+			expect(mapReduce.map.calls.count()).toEqual(5);
+			expect(mapReduce.reduce.calls.count()).toEqual(5);
+			expect(mapReduce.finalize.calls.count()).toEqual(5);
+		});
 
 		it('only uses the test data once', function() {
 			var mapReduce = {

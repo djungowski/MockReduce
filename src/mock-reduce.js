@@ -20,5 +20,8 @@ MockReduce.prototype.getAndEmptyNextTestData = function () {
 MockReduce.prototype.run = function (mapReduce) {
 	var testData = this.getAndEmptyNextTestData();
 	var mappedData = this._map.run(testData, mapReduce.map);
-	this._reduce.run(mappedData, mapReduce.reduce);
+	var reducedData = this._reduce.run(mappedData, mapReduce.reduce);
+	if (typeof mapReduce.finalize == 'function') {
+		this._reduce.run(reducedData, mapReduce.finalize);
+	}
 };

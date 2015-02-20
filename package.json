@@ -1,38 +1,37 @@
 {
-	"name": "mock-reduce",
-	"version": "0.0.1",
-	"description": "A mock for mongodbs/mongoose's mapReduce in order to achieve testability",
-	"main": "index.js",
-	"scripts": {
-		"test": "node_modules/karma/bin/karma start --single-run"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git@github.com:djungowski/MockReduce.git"
-	},
-	"keywords": [
-		"mongodb",
-		"mongoose",
-		"mapreduce",
-		"mock",
-		"mocking",
-		"test",
-		"tests",
-		"testing"
-	],
-	"author": "Dominik Jungowski",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/djungowski/MockReduce/issues"
-	},
-	"homepage": "https://github.com/djungowski/MockReduce",
-	"dependencies": {
-	},
-	"devDependencies": {
-		"jasmine-core": "^2.2.0",
-		"karma": "^0.12.31",
-		"karma-jasmine": "^0.3.5",
-		"karma-phantomjs-launcher": "^0.1.4",
-		"jasmine-node": "^1.14.5"
-	}
+  "name": "mock-reduce",
+  "version": "0.0.1",
+  "description": "A mock for mongodbs/mongoose's mapReduce in order to achieve testability",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/karma/bin/karma start --single-run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:djungowski/MockReduce.git"
+  },
+  "keywords": [
+    "mongodb",
+    "mongoose",
+    "mapreduce",
+    "mock",
+    "mocking",
+    "test",
+    "tests",
+    "testing"
+  ],
+  "author": "Dominik Jungowski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/djungowski/MockReduce/issues"
+  },
+  "homepage": "https://github.com/djungowski/MockReduce",
+  "dependencies": {},
+  "devDependencies": {
+    "jasmine": "^2.2.1",
+    "jasmine-core": "^2.2.0",
+    "karma": "^0.12.31",
+    "karma-jasmine": "^0.3.5",
+    "karma-phantomjs-launcher": "^0.1.4"
+  }
 }

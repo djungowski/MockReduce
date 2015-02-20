@@ -130,6 +130,21 @@ describe('Mock Reduce Test', function() {
 			expect(this.scopeMock.expose).toHaveBeenCalledWith(mapReduce.scope);
 			expect(this.scopeMock.concealAll).toHaveBeenCalled();
 		});
+
+		it('calls the callback with the final data if defined', function() {
+		    var mapReduce = {
+				map: function () {},
+				reduce: function() {}
+			};
+			var callbackSpy = {
+				run: function() {}
+			};
+			spyOn(this.reduceMock, 'run').and.returnValue(reducedData);
+			spyOn(callbackSpy, 'run');
+			this.mockReduce.setNextTestData(mockData);
+			this.mockReduce.run(mapReduce, callbackSpy.run);
+			expect(callbackSpy.run).toHaveBeenCalledWith(null, reducedData);
+		});
 	});
 
 	describe('#init', function() {

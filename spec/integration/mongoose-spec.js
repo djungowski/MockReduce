@@ -33,6 +33,11 @@ describe('Mongoose Integration', function() {
 			{"_id": 42, value: [4, 8]}
 		];
 
+		var reducedData = [
+			{"_id": 5, value: 10},
+			{"_id": 42, value: 12}
+		];
+
 		it('runs mockReduce in a mongoose schema', function() {
 			mockReduce.install(mongoose);
 
@@ -61,6 +66,7 @@ describe('Mongoose Integration', function() {
 			model.someMethodThatCallsMapReduce();
 			expect(mockReduce.map.getEmits()).toEqual(emits);
 			expect(mockReduce.map.getMappedData()).toEqual(mappedData);
+			expect(mockReduce.reduce.getReducedData()).toEqual(reducedData);
 			mockReduce.uninstall();
 		});
 	});

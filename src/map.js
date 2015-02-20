@@ -22,17 +22,17 @@ MockReduce.Map.prototype.run = function (testData, mapFunction) {
 	var me = this;
 
 	this._resetState();
+	window.emit = function(key, value) {
+		me.emit(key, value);
+	};
 	for (var i in testData) {
 		if (!testData.hasOwnProperty(i)) {
 			continue;
 		}
-		window.emit = function(key, value) {
-			me.emit(key, value);
-		};
 
 		mapFunction.apply(testData[i]);
-		window.emit = undefined;
 	}
+	window.emit = undefined;
 
 	return this.getMappedData();
 };

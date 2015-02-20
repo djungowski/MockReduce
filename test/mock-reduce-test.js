@@ -69,5 +69,21 @@ describe('Mock Reduce Test', function() {
 			this.mockReduce.run(mapReduce);
 			expect(mapReduce.map.calls.count()).toEqual(1);
 		});
+
+		it('exposes and conceals all given scope variables', function() {
+			var mapReduce = {
+				scope: {
+					value: "does not matter"
+				},
+				map: function() {},
+				reduce: function() {}
+			};
+
+			spyOn(this.mockReduce._scope, 'expose');
+			spyOn(this.mockReduce._scope, 'concealAll');
+			this.mockReduce.run(mapReduce);
+			expect(this.mockReduce._scope.expose).toHaveBeenCalledWith(mapReduce.scope);
+			expect(this.mockReduce._scope.concealAll).toHaveBeenCalled();
+		});
 	});
 });

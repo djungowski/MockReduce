@@ -15,6 +15,9 @@ MockReduce.Scope.prototype.expose = function (variables) {
 
 MockReduce.Scope.prototype.concealAll = function () {
 	for (var key in this._lastExposedVariables) {
+		if(!this._lastExposedVariables.hasOwnProperty(key)) {
+			continue;
+		}
 		delete window[key];
 	}
 

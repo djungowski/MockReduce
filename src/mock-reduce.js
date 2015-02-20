@@ -1,8 +1,10 @@
 MockReduce = function() {
 	this._map = new MockReduce.Map();
+	this._reduce = new MockReduce.Reduce();
 };
 
 MockReduce.prototype._map = null;
+MockReduce.prototype._reduce = null;
 MockReduce.prototype._nextTestData = null;
 
 MockReduce.prototype.setNextTestData = function (nextTestData) {
@@ -16,9 +18,7 @@ MockReduce.prototype.getAndEmptyNextTestData = function () {
 };
 
 MockReduce.prototype.run = function (mapReduce) {
-	var me = this;
 	var testData = this.getAndEmptyNextTestData();
-
-	this._emits = [];
-	this._map.run(testData, mapReduce.map);
+	var mappedData = this._map.run(testData, mapReduce.map);
+	this._reduce.run(mappedData, mapReduce.reduce);
 };

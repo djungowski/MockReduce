@@ -33,6 +33,8 @@ MockReduce.Map.prototype.run = function (testData, mapFunction) {
 		mapFunction.apply(testData[i]);
 		window.emit = undefined;
 	}
+
+	return this.getMappedData();
 };
 
 MockReduce.Map.prototype.emit = function (key, value) {

@@ -44,6 +44,11 @@ describe('Map tests', function () {
 				expect(mappedDataActual).toEqual(mappedDataExpected);
 			});
 
+			it('returns the grouped data', function () {
+				var mappedDataActual = this.map.run(mockData, map);
+				expect(mappedDataActual).toEqual(mappedDataExpected);
+			});
+
 			it('resets the grouped data', function() {
 				this.map.run(mockData, map);
 				this.map.run(mockData, map);

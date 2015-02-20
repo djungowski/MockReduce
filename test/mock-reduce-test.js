@@ -4,7 +4,20 @@ describe('Mock Reduce Test', function() {
     });
 
 	beforeEach(function() {
-	    this.mockReduce = new MockReduce();
+		this.mapMock = {
+			run: function() {}
+		};
+
+		this.reduceMock = {
+			run: function() {}
+		};
+
+		this.scopeMock = {
+			expose: function() {},
+			concealAll: function() {}
+		};
+
+	    this.mockReduce = new MockReduce(this.mapMock, this.reduceMock, this.scopeMock);
 	});
 
 	describe('#run', function() {
@@ -16,74 +29,92 @@ describe('Mock Reduce Test', function() {
 			{claptrap: "data"}
 		];
 
-	    it('calls map and reduce for every element of the data set', function() {
-			var counter = 0;
+		var mappedData = [
+			{"_id": 42, "value": [1337, 2, 4, 6, 77]},
+			{"_id": 1337, "value": [0, 0, 1, 2]}
+		];
+
+		var reducedData = [
+			{"_id": 42, "value": "A Flight to Remember"},
+			{"_id": 1337, "value": "A Tale of Two Santas"}
+		];
+
+		var finalizedData = [
+			{"_id": 42, "value": "Mars University"},
+			{"_id": 1337, "value": "Bendin' in the Wind"}
+		];
+
+	    it('calls map and reduce with the correct data and returns the correct data', function() {
 			var mapReduce = {
-				map: function() {
-					emit(counter++, 2);
-				},
-				reduce: function() {}
-			};
-			spyOn(mapReduce, 'map').and.callThrough();
-			spyOn(mapReduce, 'reduce');
-
-			this.mockReduce.setNextTestData(mockData);
-			this.mockReduce.run(mapReduce);
-			expect(mapReduce.map.calls.count()).toEqual(5);
-			expect(mapReduce.reduce.calls.count()).toEqual(5);
-	    });
-
-		it('calls map, reduce and finalize for every element of the data set', function () {
-			var counter = 0;
-			var mapReduce = {
-				map: function() {
-					emit(counter++, this.claptrap);
-				},
-				reduce: function() {},
-				finalize: function() {}
-			};
-			spyOn(mapReduce, 'map').and.callThrough();
-			spyOn(mapReduce, 'reduce');
-			spyOn(mapReduce, 'finalize');
-
-			this.mockReduce.setNextTestData(mockData);
-			this.mockReduce.run(mapReduce);
-			expect(mapReduce.map.calls.count()).toEqual(5);
-			expect(mapReduce.reduce.calls.count()).toEqual(5);
-			expect(mapReduce.finalize.calls.count()).toEqual(5);
-		});
-
-		it('only uses the test data once', function() {
-			var mapReduce = {
-				map: function() {}
-			};
-			spyOn(mapReduce, 'map').and.callThrough();
-
-			var mockData = [
-				{first: "data"}
-			];
-
-			this.mockReduce.setNextTestData(mockData);
-			this.mockReduce.run(mapReduce);
-			expect(mapReduce.map.calls.count()).toEqual(1);
-			this.mockReduce.run(mapReduce);
-			expect(mapReduce.map.calls.count()).toEqual(1);
-		});
-
-		it('exposes and conceals all given scope variables', function() {
-			var mapReduce = {
-				scope: {
-					value: "does not matter"
-				},
 				map: function() {},
 				reduce: function() {}
 			};
+			spyOn(this.mapMock, 'run').and.returnValue(mappedData);
+			spyOn(this.reduceMock, 'run').and.returnValue(reducedData);
 
-			spyOn(this.mockReduce._scope, 'expose');
-			spyOn(this.mockReduce._scope, 'concealAll');
-			this.mockReduce.run(mapReduce);
-			expect(this.mockReduce._scope.expose).toHaveBeenCalledWith(mapReduce.scope);
-			expect(this.mockReduce._scope.concealAll).toHaveBeenCalled();
+			this.mockReduce.setNextTestData(mockData);
+			var actual = this.mockReduce.run(mapReduce);
+			expect(this.mapMock.run).toHaveBeenCalledWith(mockData, mapReduce.map);
+			expect(this.reduceMock.run).toHaveBeenCalledWith(mappedData, mapReduce.reduce);
+			expect(actual).toEqual(reducedData);
+	    });
+
+		it('calls map, reduce and finalize with the correct data and returns the correct data', function () {
+			var mapReduce = {
+				map: function() {},
+				reduce: function() {},
+				finalize: function() {}
+			};
+			var me = this;
+			spyOn(this.mapMock, 'run').and.returnValue(mappedData);
+			spyOn(this.reduceMock, 'run').and.callFake(function () {
+				if (me.reduceMock.run.calls.count() == 1) {
+					return reducedData;
+				}
+				return finalizedData;
+			});
+
+			this.mockReduce.setNextTestData(mockData);
+			var actual = this.mockReduce.run(mapReduce);
+			expect(this.mapMock.run).toHaveBeenCalledWith(mockData, mapReduce.map);
+			expect(this.reduceMock.run.calls.argsFor(0)).toEqual([mappedData, mapReduce.reduce]);
+			expect(this.reduceMock.run.calls.argsFor(1)).toEqual([reducedData, mapReduce.finalize]);
+			expect(this.reduceMock.run.calls.count()).toEqual(2);
+			expect(actual).toEqual(finalizedData);
 		});
+
+//		it('only uses the test data once', function() {
+//			var mapReduce = {
+//				map: function() {},
+//				reduce: function() {}
+//			};
+//			spyOn(mapReduce, 'map');
+//
+//			var mockData = [
+//				{first: "data"}
+//			];
+//
+//			this.mockReduce.setNextTestData(mockData);
+//			this.mockReduce.run(mapReduce);
+//			expect(mapReduce.map.calls.count()).toEqual(1);
+//			this.mockReduce.run(mapReduce);
+//			expect(mapReduce.map.calls.count()).toEqual(1);
+//		});
+//
+//		it('exposes and conceals all given scope variables', function() {
+//			var mapReduce = {
+//				scope: {
+//					value: "does not matter"
+//				},
+//				map: function() {},
+//				reduce: function() {}
+//			};
+//
+//			spyOn(this.mockReduce._scope, 'expose');
+//			spyOn(this.mockReduce._scope, 'concealAll');
+//			this.mockReduce.run(mapReduce);
+//			expect(this.mockReduce._scope.expose).toHaveBeenCalledWith(mapReduce.scope);
+//			expect(this.mockReduce._scope.concealAll).toHaveBeenCalled();
+//		});
 	});
 });

@@ -22,5 +22,32 @@ describe('Reduce tests', function() {
 			this.reduce.run(mockData, mapReduce.reduce);
 			expect(mapReduce.reduce.calls.count()).toEqual(3);
 	    });
+
+		describe('Data Reducing', function() {
+			var reduce = function (key, values) {
+				var total = 0;
+				for(var i=0, valuesLength = values.length; i < valuesLength; i++) {
+					total += values[i];
+				}
+				return total;
+			};
+
+			var expected = [
+				{ "_id": 42, "value": 47},
+				{ "_id": 1337, "value": 5750 },
+				{ "_id": 23, "value": 5317 }
+			];
+
+			it('reduces the data', function () {
+				this.reduce.run(mockData, reduce);
+				expect(this.reduce.getReducedData()).toEqual(expected);
+			});
+
+		    it('resets the reduced data after each run', function() {
+				this.reduce.run(mockData, reduce);
+				this.reduce.run(mockData, reduce);
+				expect(this.reduce.getReducedData()).toEqual(expected);
+		    });
+		});
 	});
 });

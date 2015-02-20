@@ -30,24 +30,32 @@ describe('Install spec', function () {
 			expect(mongoDbMock.createConnection).not.toBe(originalCreateConnection);
 		});
 
-		it('overloads model', function() {
-		    var mongooseMock = {
-				connect: function() {},
-				model: function() {}
-			};
+		describe('.model', function() {
+			beforeEach(function() {
+				this.mongooseMock = {
+					connect: function() {},
+					model: function() {}
+				};
+			});
 
-			var originalModel = mongooseMock.model;
-			this.installer.install(mongooseMock, this.mockReduceMock);
-			expect(mongooseMock.model).not.toBe(originalModel);
-		});
+			it('overloads model', function() {
+				var originalModel = this.mongooseMock.model;
+				this.installer.install(this.mongooseMock, this.mockReduceMock);
+				expect(this.mongooseMock.model).not.toBe(originalModel);
+			});
 
-		it('does not set .model if .model is not present', function () {
-			var mongoDbMock = {
-				connect: function() {}
-			};
-			var originalConnect = mongoDbMock.connect;
-			this.installer.install(mongoDbMock, this.mockReduceMock);
-			expect(mongoDbMock.model).toBeUndefined();
+			it('does not set .model if .model is not present', function () {
+				var mongoDbMock = {
+					connect: function() {}
+				};
+				this.installer.install(mongoDbMock, this.mockReduceMock);
+				expect(mongoDbMock.model).toBeUndefined();
+			});
+
+		    it('returns mockReduce when calling .model', function() {
+				this.installer.install(this.mongooseMock, this.mockReduceMock);
+				expect(this.mongooseMock.model()).toBe(this.mockReduceMock);
+		    });
 		});
 	});
 

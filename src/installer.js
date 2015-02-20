@@ -43,7 +43,9 @@ MockReduce.Installer.prototype.install = function(connector, mockReduce) {
 	}
 
 	if (connector.model != undefined) {
-		connector.model = function () {}
+		connector.model = function () {
+			return mockReduce;
+		}
 	}
 };
 

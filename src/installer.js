@@ -35,6 +35,11 @@ MockReduce.Installer.prototype._originalCreateConnection = null;
  */
 MockReduce.Installer.prototype._originalModel = null;
 
+MockReduce.Installer.prototype.CONNECTOR_TYPE = {
+	NATIVE: 'native',
+	MONGOOSE: 'mongoose'
+};
+
 /**
  * Install MockReduce for a MongoClient or Mongoose connector
  *
@@ -46,6 +51,29 @@ MockReduce.Installer.prototype.install = function(connector, mockReduce) {
 	this._installConnect(mockReduce);
 	this._installCreateConnection();
 	this._installModel(mockReduce);
+};
+
+/**
+ * Determines the connector type
+ *
+ * @returns {string}
+ * @private
+ */
+MockReduce.Installer.prototype._determineConnectorType = function () {
+	if (this._connectorHasCreateConnection()) {
+		return this.CONNECTOR_TYPE.MONGOOSE;
+	}
+	return this.CONNECTOR_TYPE.NATIVE;
+};
+
+/**
+ * Check if connector has a .createConnection method
+ *
+ * @returns {boolean}
+ * @private
+ */
+MockReduce.Installer.prototype._connectorHasCreateConnection = function () {
+	return (this._connector.createConnection != undefined);
 };
 
 /**
@@ -69,7 +97,7 @@ MockReduce.Installer.prototype._installConnect = function (mockReduce) {
  * @private
  */
 MockReduce.Installer.prototype._installCreateConnection = function () {
-	if (this._connector.createConnection != undefined) {
+	if (this._connectorHasCreateConnection()) {
 		this._originalCreateConnection = this._connector.createConnection;
 		this._connector.createConnection = function() {};
 	}

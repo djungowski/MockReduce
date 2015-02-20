@@ -147,6 +147,90 @@ describe('Mock Reduce Test', function() {
 		});
 	});
 
+	describe('#mapReduce', function () {
+		var mockData = [{}];
+
+		var mapReduce = {
+			map: function() {},
+			reduce: function() {},
+			finalize: function() {}
+		};
+
+		beforeEach(function() {
+			spyOn(this.mapMock, 'run');
+			spyOn(this.reduceMock, 'run');
+		});
+
+		describe('mongoose style', function() {
+			it('calls all the mocks since it simply wraps run when providing a mapReduce object', function() {
+				this.mockReduce.setNextTestData(mockData);
+				this.mockReduce.mapReduce(mapReduce);
+				expect(this.mapMock.run.calls.count()).toEqual(1);
+				// finalize also calls reduce.run
+				expect(this.reduceMock.run.calls.count()).toEqual(2);
+			});
+
+			it('calls the callback', function () {
+				var callbackSpy = {
+					run: function() {}
+				};
+				spyOn(callbackSpy, 'run');
+				this.mockReduce.setNextTestData(mockData);
+				this.mockReduce.mapReduce(mapReduce, callbackSpy.run);
+				expect(callbackSpy.run).toHaveBeenCalled();
+			});
+		});
+
+		describe('native driver style', function() {
+			it('calls map and reduce', function () {
+				this.mockReduce.setNextTestData(mockData);
+				this.mockReduce.mapReduce(mapReduce.map, mapReduce.reduce);
+				expect(this.mapMock.run.calls.count()).toEqual(1);
+				// finalize also calls reduce.run
+				expect(this.reduceMock.run.calls.count()).toEqual(1);
+			});
+
+			it('calls map, reduce and finalize', function () {
+				var options = {
+					finalize: mapReduce.finalize
+				};
+
+				this.mockReduce.setNextTestData(mockData);
+				this.mockReduce.mapReduce(mapReduce.map, mapReduce.reduce, options);
+				expect(this.mapMock.run.calls.count()).toEqual(1);
+				// finalize also calls reduce.run
+				expect(this.reduceMock.run.calls.count()).toEqual(2);
+			});
+
+			it('calls the callback', function () {
+				var callbackSpy = {
+					run: function() {}
+				};
+				spyOn(callbackSpy, 'run');
+
+				this.mockReduce.setNextTestData(mockData);
+				this.mockReduce.mapReduce(mapReduce.map, mapReduce.reduce, null, callbackSpy.run);
+				expect(callbackSpy.run).toHaveBeenCalled();
+			});
+
+			it('sets the scope vars', function() {
+				var options = {
+					scope: {
+						value: "unimportant"
+					}
+				};
+
+				spyOn(this.scopeMock, 'expose');
+				spyOn(this.scopeMock, 'concealAll');
+
+				this.mockReduce.setNextTestData(mockData);
+				this.mockReduce.mapReduce(mapReduce.map, mapReduce.reduce, options);
+				expect(this.scopeMock.expose).toHaveBeenCalledWith(options.scope);
+				expect(this.scopeMock.concealAll).toHaveBeenCalled();
+			});
+		});
+	});
+
 	describe('#init', function() {
 	    it('creates a scope object with map, mock and scope instances', function() {
 	        var map = new MockReduce.Map(new MockReduce.Scope());
@@ -164,9 +248,9 @@ describe('Mock Reduce Test', function() {
 		it('throws an exception if no installer is set', function() {
 			var me = this;
 			var spec = function() {
-				this.mockReduce.install();
+				me.mockReduce.install();
 			};
-			expect(spec).toThrow();
+			expect(spec).toThrow('No installer defined');
 		});
 
 		it('calls the installer#install if present', function () {
@@ -187,9 +271,9 @@ describe('Mock Reduce Test', function() {
 		it('throws an exception if no installer is set', function() {
 			var me = this;
 			var spec = function() {
-				this.mockReduce.uninstall();
+				me.mockReduce.uninstall();
 			};
-			expect(spec).toThrow();
+			expect(spec).toThrow('No installer defined');
 		});
 
 		it('calls the installer#uninstall if present', function () {

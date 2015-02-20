@@ -150,19 +150,31 @@ describe('Mock Reduce Test', function() {
 	describe('#mapReduce', function () {
 		var mockData = [{}];
 
+		var mapReduce = {
+			map: function() {},
+			reduce: function() {},
+			finalize: function() {}
+		};
+
 		it('calls all the mocks since it simply wraps run when providing a mapReduce object', function() {
-		    var mapReduce = {
-				map: function() {},
-				reduce: function() {},
-				finalize: function() {}
-			};
 			spyOn(this.mapMock, 'run');
 			spyOn(this.reduceMock, 'run');
 
 			this.mockReduce.setNextTestData(mockData);
 			this.mockReduce.mapReduce(mapReduce);
 			expect(this.mapMock.run).toHaveBeenCalled();
-			expect(this.reduceMock.run).toHaveBeenCalled();
+			// finalize also calls reduce.run
+			expect(this.reduceMock.run.calls.count()).toEqual(2);
+		});
+
+		it('calls the callback', function () {
+			var callbackSpy = {
+				run: function() {}
+			};
+			spyOn(callbackSpy, 'run');
+			this.mockReduce.setNextTestData(mockData);
+			this.mockReduce.mapReduce(mapReduce, callbackSpy.run);
+			expect(callbackSpy.run).toHaveBeenCalled();
 		});
 	});
 

@@ -164,7 +164,7 @@ describe('Mock Reduce Test', function() {
 			spyOn(installerMock, 'install');
 			this.mockReduce.setInstaller(installerMock);
 			this.mockReduce.install(connectorMock);
-			expect(installerMock.install).toHaveBeenCalledWith(connectorMock);
+			expect(installerMock.install).toHaveBeenCalledWith(connectorMock, this.mockReduce);
 		})
 	});
 

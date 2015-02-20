@@ -28,18 +28,66 @@ MockReduce.Installer.prototype._originalConnect = null;
 MockReduce.Installer.prototype._originalCreateConnection = null;
 
 /**
+ * The original model() function of the connector
+ *
+ * @type {function}
+ * @private
+ */
+MockReduce.Installer.prototype._originalModel = null;
+
+/**
  * Install MockReduce for a MongoClient or Mongoose connector
  *
  * @param connector
+ * @param mockReduce
  */
-MockReduce.Installer.prototype.install = function(connector) {
+MockReduce.Installer.prototype.install = function(connector, mockReduce) {
 	this._connector = connector;
-	this._originalConnect = connector.connect;
-	connector.connect = function() {};
+	this._installConnect(mockReduce);
+	this._installCreateConnection();
+	this._installModel(mockReduce);
+};
 
-	if (connector.createConnection != undefined) {
-		this._originalCreateConnection = connector.createConnection;
-		connector.createConnection = function() {};
+/**
+ * Install the .connect method
+ *
+ * @private
+ */
+MockReduce.Installer.prototype._installConnect = function (mockReduce) {
+	this._originalConnect = this._connector.connect;
+	this._connector.connect = function(url, callback) {
+		var returnMockReduce = function () {
+			return mockReduce;
+		};
+		callback(null, {collection: returnMockReduce});
+	};
+};
+
+/**
+ * Install the .createConnection method
+ *
+ * @private
+ */
+MockReduce.Installer.prototype._installCreateConnection = function () {
+	if (this._connector.createConnection != undefined) {
+		this._originalCreateConnection = this._connector.createConnection;
+		this._connector.createConnection = function() {};
+	}
+};
+
+/**
+ * Install the .model method
+ *
+ * @param mockReduce
+ * @private
+ */
+MockReduce.Installer.prototype._installModel = function (mockReduce) {
+	if (this._connector.model != undefined) {
+		this._originalModel = this._connector.model;
+
+		this._connector.model = function () {
+			return mockReduce;
+		}
 	}
 };
 
@@ -51,5 +99,8 @@ MockReduce.Installer.prototype.uninstall = function () {
 	this._connector.connect = this._originalConnect;
 	if(this._originalCreateConnection != null) {
 		this._connector.createConnection = this._originalCreateConnection;
+	}
+	if(this._originalModel != null) {
+		this._connector.model = this._originalModel;
 	}
 };

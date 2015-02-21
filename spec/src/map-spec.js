@@ -1,6 +1,6 @@
 describe('Map tests', function () {
 	beforeEach(function() {
-		this.scopeMock = new MockReduce.Scope();
+		this.scopeMock = new MockReduce.Scope(window || global);
 	    this.map = new MockReduce.Map(this.scopeMock);
 	});
 

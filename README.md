@@ -42,6 +42,7 @@ describe('Mongoose Test', function() {
 	});
 });
 ```
+See file [spec/integration/mongoose-spec.js](https://github.com/djungowski/MockReduce/blob/master/spec/integration/mongoose-spec.js) for an extended test example
 
 ## Using mockReduce with with node-mongodb-native
 __Caution: This feature is still work in progress. Generally it should work, I haven't fully tested it yet__

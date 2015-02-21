@@ -1,7 +1,20 @@
 /**
  * @constructor
+ *
+ * @param scope
  */
-MockReduce.Scope = function() {};
+MockReduce.Scope = function(scope) {
+	this._scope = scope;
+};
+
+/**
+ * The scope to expose and conceal variables in
+ * Most likely will be window or global
+ *
+ * @var {object}
+ *
+ */
+MockReduce.Scope.prototype._scope = null;
 
 /**
  * The variables that have been exposed last
@@ -22,7 +35,7 @@ MockReduce.Scope.prototype.expose = function (variables) {
 			continue;
 		}
 
-		window[key] = variables[key];
+		this._scope[key] = variables[key];
 	}
 	this._lastExposedVariables = variables;
 };
@@ -36,7 +49,7 @@ MockReduce.Scope.prototype.concealAll = function () {
 		if(!this._lastExposedVariables.hasOwnProperty(key)) {
 			continue;
 		}
-		delete window[key];
+		delete this._scope[key];
 	}
 
 	this._lastExposedVariables = null;

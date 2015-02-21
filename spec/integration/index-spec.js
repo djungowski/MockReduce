@@ -2,9 +2,10 @@ describe('index.js test', function () {
 	it('creates a MockReduce instance when requiring, requires all needed modules', function() {
 		var mockReduce = require('../../index');
 
-		var map = new MockReduce.Map(new MockReduce.Scope());
+		var globalScope = window || global;
+		var map = new MockReduce.Map(new MockReduce.Scope(globalScope));
 		var reduce = new MockReduce.Reduce();
-		var scope = new MockReduce.Scope();
+		var scope = new MockReduce.Scope(globalScope);
 		var expected = new MockReduce(map, reduce, scope);
 
 		var installer = new MockReduce.Installer();

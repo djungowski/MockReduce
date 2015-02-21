@@ -36,6 +36,12 @@ MockReduce.prototype._scope = null;
  */
 MockReduce.prototype._nextTestData = null;
 
+/**
+ * The installer instance
+ *
+ * @type {MockReduce.Installer}
+ * @private
+ */
 MockReduce.prototype._installer = null;
 
 /**
@@ -44,9 +50,10 @@ MockReduce.prototype._installer = null;
  * @returns {MockReduce}
  */
 MockReduce.init = function () {
-	var map = new MockReduce.Map(new MockReduce.Scope());
+	var globalScope = window || global;
+	var map = new MockReduce.Map(new MockReduce.Scope(globalScope));
 	var reduce = new MockReduce.Reduce();
-	var scope = new MockReduce.Scope();
+	var scope = new MockReduce.Scope(globalScope);
 	return new MockReduce(map, reduce, scope);
 };
 

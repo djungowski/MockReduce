@@ -1,6 +1,14 @@
 describe('Map tests', function () {
 	beforeEach(function() {
-		this.scopeMock = new MockReduce.Scope(window || global);
+		if (typeof window != 'undefined') {
+			this.globalScope = window;
+		} else if (typeof global != 'undefined') {
+			this.globalScope = global;
+		} else {
+			this.globalScope = {};
+		}
+
+		this.scopeMock = new MockReduce.Scope(this.globalScope);
 	    this.map = new MockReduce.Map(this.scopeMock);
 	});
 
@@ -37,7 +45,7 @@ describe('Map tests', function () {
 			var me = this;
 			expect(this.scopeMock.expose).toHaveBeenCalledWith({emit: jasmine.any(Function)});
 			expect(this.scopeMock.concealAll).toHaveBeenCalled();
-			expect(window.emit).toBeUndefined();
+			expect(this.globalScope.emit).toBeUndefined();
 		});
 
 		describe('data grouping', function() {

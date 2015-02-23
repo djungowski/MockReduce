@@ -99,9 +99,19 @@ So far the following methods are supported:
 - scope
 - done callback
 
-## Running the tests
-MockReduce was completely developed test-drive. If you wish to run its own tests, clone the git repo and run
+## Running MockReduce's own tests
+MockReduce was completely developed test-driven. If you wish to run its own tests, clone the git repo and run
 ```bash
 npm install
 npm test
 ```
+
+## Changelog
+### 0.0.4
+- Install does not break the original connector when running twice
+
+### 0.0.3
+- Fixed "window is not defined" issue
+
+### 0.0.2
+- MockReduce can now be used directly within node itself (PhantomJS not needed anymore)

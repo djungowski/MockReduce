@@ -239,7 +239,15 @@ describe('Mock Reduce Test', function() {
 
 	describe('#init', function() {
 	    it('creates a scope object with map, mock and scope instances', function() {
-			var globalScope = window || global;
+			var globalScope;
+			if (typeof window != 'undefined') {
+				globalScope = window;
+			} else if (typeof global != 'undefined') {
+				globalScope = global;
+			} else {
+				globalScope = {};
+			}
+
 	        var map = new MockReduce.Map(new MockReduce.Scope(globalScope));
 	        var reduce = new MockReduce.Reduce();
 	        var scope = new MockReduce.Scope(globalScope);

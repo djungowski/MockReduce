@@ -35,6 +35,19 @@ MockReduce.Installer.prototype._originalCreateConnection = null;
  */
 MockReduce.Installer.prototype._originalModel = null;
 
+/**
+ * Is MockReduce currently installed?
+ *
+ * @type {boolean}
+ * @private
+ */
+MockReduce.Installer.prototype._isInstalled = false;
+
+/**
+ * Available connector types
+ *
+ * @type {{NATIVE: string, MONGOOSE: string}}
+ */
 MockReduce.Installer.prototype.CONNECTOR_TYPE = {
 	NATIVE: 'native',
 	MONGOOSE: 'mongoose'
@@ -47,10 +60,13 @@ MockReduce.Installer.prototype.CONNECTOR_TYPE = {
  * @param mockReduce
  */
 MockReduce.Installer.prototype.install = function(connector, mockReduce) {
-	this._connector = connector;
-	this._installConnect(mockReduce);
-	this._installCreateConnection();
-	this._installModel(mockReduce);
+	if (!this._isInstalled) {
+		this._connector = connector;
+		this._installConnect(mockReduce);
+		this._installCreateConnection();
+		this._installModel(mockReduce);
+		this._isInstalled = true;
+	}
 };
 
 /**
@@ -136,4 +152,5 @@ MockReduce.Installer.prototype.uninstall = function () {
 	if(this._originalModel != null) {
 		this._connector.model = this._originalModel;
 	}
+	this._isInstalled = false;
 };

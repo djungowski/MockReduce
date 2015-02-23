@@ -49,6 +49,31 @@ describe('Install spec', function () {
 				expect(actualDb).toEqual(expectedDb);
 				expect(actualDb.collection()).toBe(this.mockReduceMock);
 		    });
+
+			it('does not overload connect when running install twice before using uninstall', function() {
+				var mongoDbMock = {
+					connect: function () {
+					}
+				};
+				var originalConnect = mongoDbMock.connect;
+				this.installer.install(mongoDbMock, this.mockReduceMock);
+				this.installer.install(mongoDbMock, this.mockReduceMock);
+				this.installer.uninstall();
+				expect(mongoDbMock.connect).toBe(originalConnect);
+			});
+
+			it('does overload if install is run twice with uninstall inbetween', function() {
+				var mongoDbMock = {
+					connect: function () {
+					}
+				};
+				var originalConnect = mongoDbMock.connect;
+				this.installer.install(mongoDbMock, this.mockReduceMock);
+				this.installer.uninstall();
+				expect(mongoDbMock.connect).toBe(originalConnect);
+				this.installer.install(mongoDbMock, this.mockReduceMock);
+				expect(mongoDbMock.connect).not.toBe(originalConnect);
+			});
 		});
 
 		describe('.model', function() {

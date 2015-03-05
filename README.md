@@ -107,6 +107,9 @@ npm test
 ```
 
 ## Changelog
+### 0.0.5
+- Bugfix: Don't break when connect is called without a callback
+
 ### 0.0.4
 - Install does not break the original connector when running twice
 

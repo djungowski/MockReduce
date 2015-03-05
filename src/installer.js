@@ -100,6 +100,7 @@ MockReduce.Installer.prototype._connectorHasCreateConnection = function () {
 MockReduce.Installer.prototype._installConnect = function (mockReduce) {
 	this._originalConnect = this._connector.connect;
 	this._connector.connect = function(url, callback) {
+		callback = callback || function() {};
 		var returnMockReduce = function () {
 			return mockReduce;
 		};

@@ -33,8 +33,8 @@ describe('Install spec', function () {
 				expect(mongoDbMock.createConnection).not.toBe(originalCreateConnection);
 			});
 
-		    it('returns a object with a .collection method which itself returns mockReduce', function() {
-		        var mongoDbMock = {
+			it('returns an object with a .collection method which itself returns mockReduce', function() {
+				var mongoDbMock = {
 					connect: function () {}
 				};
 				this.installer.install(mongoDbMock, this.mockReduceMock);
@@ -42,13 +42,24 @@ describe('Install spec', function () {
 				var expectedDb = {
 					collection: jasmine.any(Function)
 				};
-				var actual = null;
 				mongoDbMock.connect('foo', function(err, db) {
 					actualDb = db;
 				});
 				expect(actualDb).toEqual(expectedDb);
 				expect(actualDb.collection()).toBe(this.mockReduceMock);
-		    });
+			});
+
+			it('does not break if connect is not given a callback', function () {
+				var mongoDbMock = {
+					connect: function () {}
+				};
+				this.installer.install(mongoDbMock, this.mockReduceMock);
+
+				var openConnection = function() {
+					mongoDbMock.connect('foo');
+				};
+				expect(openConnection).not.toThrow()
+			});
 
 			it('does not overload connect when running install twice before using uninstall', function() {
 				var mongoDbMock = {

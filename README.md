@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/djungowski/MockReduce.svg?branch=master)](https://travis-ci.org/djungowski/MockReduce)
+
 # MockReduce
 A mock for mongodbs/mongoose's mapReduce in order to achieve testability
 

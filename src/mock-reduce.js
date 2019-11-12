@@ -8,7 +8,7 @@ class MockReduce {
     /**
      * Instance of MockReduce.Map
      *
-     * @type {MockReduce.Map}
+     * @type {MockReduceMap}
      * @private
      */
     this.map = map;
@@ -16,7 +16,7 @@ class MockReduce {
     /**
      * Instance of MockReduce.Reduce
      *
-     * @type {MockReduce.Reduce}
+     * @type {Reduce}
      * @private
      */
     this.reduce = reduce;
@@ -24,7 +24,7 @@ class MockReduce {
     /**
      * Instance of MockReduce.Scope
      *
-     * @type {MockReduce.Scope}
+     * @type {Scope}
      * @private
      */
     this._scope = scope;
@@ -40,31 +40,10 @@ class MockReduce {
     /**
      * The installer instance
      *
-     * @type {MockReduce.Installer}
+     * @type {Installer}
      * @private
      */
     this._installer = null;
-  }
-
-  /**
-   * Initialize a working MockReduce instance
-   *
-   * @returns {MockReduce}
-   */
-  static init() {
-    var globalScope;
-    if (typeof window != "undefined") {
-      globalScope = window;
-    } else if (typeof global != "undefined") {
-      globalScope = global;
-    } else {
-      globalScope = {};
-    }
-
-    var map = new MockReduceMap(new Scope(globalScope));
-    var reduce = new Reduce();
-    var scope = new Scope(globalScope);
-    return new MockReduce(map, reduce, scope);
   }
 
   /**

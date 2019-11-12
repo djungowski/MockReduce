@@ -24,6 +24,24 @@ class Scope {
   }
 
   /**
+   * Basically check if we're in browser or node context
+   * 
+   * @returns {window|global|Object}
+   */
+  static getGlobalScope() {
+    let globalScope;
+    if (typeof window !== "undefined") {
+      globalScope = window;
+    } else if (typeof global !== "undefined") {
+      globalScope = global;
+    } else {
+      globalScope = {};
+    }
+
+    return globalScope;
+  }
+
+  /**
    * Expose all provided variables
    *
    * @param variables "{firstkey: 'firstvalue', secondkey: 'secondvalue'}"

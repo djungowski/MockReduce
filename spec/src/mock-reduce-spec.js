@@ -1,312 +1,303 @@
-const MockReduce = require('../../src/mock-reduce');
-const MockReduceMap = require('../../src/map');
-const Scope = require('../../src/scope');
-const Reduce = require('../../src/reduce');
+const MockReduce = require("../../src/mock-reduce");
+const MockReduceMap = require("../../src/map");
+const Scope = require("../../src/scope");
+const Reduce = require("../../src/reduce");
 
-describe('Mock Reduce Test', function() {
-    it('exists', function() {
-        expect(MockReduce).not.toBeUndefined();
+describe("Mock Reduce Test", function() {
+  it("exists", function() {
+    expect(MockReduce).not.toBeUndefined();
+  });
+
+  beforeEach(function() {
+    this.mapMock = {
+      run: function() {}
+    };
+
+    this.reduceMock = {
+      run: function() {}
+    };
+
+    this.scopeMock = {
+      expose: function() {},
+      concealAll: function() {}
+    };
+
+    this.mockReduce = new MockReduce(
+      this.mapMock,
+      this.reduceMock,
+      this.scopeMock
+    );
+  });
+
+  describe("#run", function() {
+    var mockData = [
+      { claptrap: "data" },
+      { claptrap: "data" },
+      { claptrap: "data" },
+      { claptrap: "data" },
+      { claptrap: "data" }
+    ];
+
+    var mappedData = [
+      { _id: 42, value: [1337, 2, 4, 6, 77] },
+      { _id: 1337, value: [0, 0, 1, 2] }
+    ];
+
+    var reducedData = [
+      { _id: 42, value: "A Flight to Remember" },
+      { _id: 1337, value: "A Tale of Two Santas" }
+    ];
+
+    var finalizedData = [
+      { _id: 42, value: "Mars University" },
+      { _id: 1337, value: "Bendin' in the Wind" }
+    ];
+
+    it("calls map and reduce with the correct data and returns the correct data", function() {
+      var mapReduce = {
+        map: function() {},
+        reduce: function() {}
+      };
+      spyOn(this.mapMock, "run").and.returnValue(mappedData);
+      spyOn(this.reduceMock, "run").and.returnValue(reducedData);
+
+      this.mockReduce.setNextTestData(mockData);
+      var actual = this.mockReduce.run(mapReduce);
+      expect(this.mapMock.run).toHaveBeenCalledWith(mockData, mapReduce.map);
+      expect(this.reduceMock.run).toHaveBeenCalledWith(
+        mappedData,
+        mapReduce.reduce
+      );
+      expect(actual).toEqual(reducedData);
     });
 
-	beforeEach(function() {
-		this.mapMock = {
-			run: function() {}
-		};
+    it("calls map, reduce and finalize with the correct data and returns the correct data", function() {
+      var mapReduce = {
+        map: function() {},
+        reduce: function() {},
+        finalize: function() {}
+      };
+      var me = this;
+      spyOn(this.mapMock, "run").and.returnValue(mappedData);
+      spyOn(this.reduceMock, "run").and.callFake(function() {
+        if (me.reduceMock.run.calls.count() == 1) {
+          return reducedData;
+        }
+        return finalizedData;
+      });
 
-		this.reduceMock = {
-			run: function() {}
-		};
+      this.mockReduce.setNextTestData(mockData);
+      var actual = this.mockReduce.run(mapReduce);
+      expect(this.mapMock.run).toHaveBeenCalledWith(mockData, mapReduce.map);
+      expect(this.reduceMock.run.calls.argsFor(0)).toEqual([
+        mappedData,
+        mapReduce.reduce
+      ]);
+      expect(this.reduceMock.run.calls.argsFor(1)).toEqual([
+        reducedData,
+        mapReduce.finalize
+      ]);
+      expect(this.reduceMock.run.calls.count()).toEqual(2);
+      expect(actual).toEqual(finalizedData);
+    });
 
-		this.scopeMock = {
-			expose: function() {},
-			concealAll: function() {}
-		};
+    it("only uses the test data once, returns empty array if no testData is provided", function() {
+      var mapReduce = {
+        map: function() {},
+        reduce: function() {}
+      };
+      spyOn(this.mapMock, "run");
+      spyOn(this.reduceMock, "run");
 
-	    this.mockReduce = new MockReduce(this.mapMock, this.reduceMock, this.scopeMock);
-	});
+      var mockData = [{ first: "data" }];
 
-	describe('#run', function() {
-		var mockData = [
-			{claptrap: "data"},
-			{claptrap: "data"},
-			{claptrap: "data"},
-			{claptrap: "data"},
-			{claptrap: "data"}
-		];
+      this.mockReduce.setNextTestData(mockData);
+      this.mockReduce.run(mapReduce);
+      expect(this.mapMock.run.calls.count()).toEqual(1);
+      expect(this.reduceMock.run.calls.count()).toEqual(1);
 
-		var mappedData = [
-			{"_id": 42, "value": [1337, 2, 4, 6, 77]},
-			{"_id": 1337, "value": [0, 0, 1, 2]}
-		];
+      this.mapMock.run.calls.reset();
+      this.reduceMock.run.calls.reset();
 
-		var reducedData = [
-			{"_id": 42, "value": "A Flight to Remember"},
-			{"_id": 1337, "value": "A Tale of Two Santas"}
-		];
+      var actual = this.mockReduce.run(mapReduce);
+      expect(this.mapMock.run.calls.count()).toEqual(0);
+      expect(this.reduceMock.run.calls.count()).toEqual(0);
+      expect(actual).toEqual([]);
+    });
 
-		var finalizedData = [
-			{"_id": 42, "value": "Mars University"},
-			{"_id": 1337, "value": "Bendin' in the Wind"}
-		];
+    it("exposes and conceals all given scope variables", function() {
+      var mapReduce = {
+        scope: {
+          value: "does not matter"
+        },
+        map: function() {},
+        reduce: function() {}
+      };
 
-	    it('calls map and reduce with the correct data and returns the correct data', function() {
-			var mapReduce = {
-				map: function() {},
-				reduce: function() {}
-			};
-			spyOn(this.mapMock, 'run').and.returnValue(mappedData);
-			spyOn(this.reduceMock, 'run').and.returnValue(reducedData);
+      spyOn(this.scopeMock, "expose");
+      spyOn(this.scopeMock, "concealAll");
 
-			this.mockReduce.setNextTestData(mockData);
-			var actual = this.mockReduce.run(mapReduce);
-			expect(this.mapMock.run).toHaveBeenCalledWith(mockData, mapReduce.map);
-			expect(this.reduceMock.run).toHaveBeenCalledWith(mappedData, mapReduce.reduce);
-			expect(actual).toEqual(reducedData);
-	    });
+      var mockData = [{ first: "data" }];
 
-		it('calls map, reduce and finalize with the correct data and returns the correct data', function () {
-			var mapReduce = {
-				map: function() {},
-				reduce: function() {},
-				finalize: function() {}
-			};
-			var me = this;
-			spyOn(this.mapMock, 'run').and.returnValue(mappedData);
-			spyOn(this.reduceMock, 'run').and.callFake(function () {
-				if (me.reduceMock.run.calls.count() == 1) {
-					return reducedData;
-				}
-				return finalizedData;
-			});
+      this.mockReduce.setNextTestData(mockData);
+      this.mockReduce.run(mapReduce);
+      expect(this.scopeMock.expose).toHaveBeenCalledWith(mapReduce.scope);
+      expect(this.scopeMock.concealAll).toHaveBeenCalled();
+    });
 
-			this.mockReduce.setNextTestData(mockData);
-			var actual = this.mockReduce.run(mapReduce);
-			expect(this.mapMock.run).toHaveBeenCalledWith(mockData, mapReduce.map);
-			expect(this.reduceMock.run.calls.argsFor(0)).toEqual([mappedData, mapReduce.reduce]);
-			expect(this.reduceMock.run.calls.argsFor(1)).toEqual([reducedData, mapReduce.finalize]);
-			expect(this.reduceMock.run.calls.count()).toEqual(2);
-			expect(actual).toEqual(finalizedData);
-		});
+    it("calls the callback with the final data if defined", function() {
+      var mapReduce = {
+        map: function() {},
+        reduce: function() {}
+      };
+      var callbackSpy = {
+        run: function() {}
+      };
+      spyOn(this.reduceMock, "run").and.returnValue(reducedData);
+      spyOn(callbackSpy, "run");
+      this.mockReduce.setNextTestData(mockData);
+      this.mockReduce.run(mapReduce, callbackSpy.run);
+      expect(callbackSpy.run).toHaveBeenCalledWith(null, reducedData);
+    });
+  });
 
-		it('only uses the test data once, returns empty array if no testData is provided', function() {
-			var mapReduce = {
-				map: function() {},
-				reduce: function() {}
-			};
-			spyOn(this.mapMock, 'run');
-			spyOn(this.reduceMock, 'run');
+  describe("#mapReduce", function() {
+    var mockData = [{}];
 
-			var mockData = [
-				{first: "data"}
-			];
+    var mapReduce = {
+      map: function() {},
+      reduce: function() {},
+      finalize: function() {}
+    };
 
-			this.mockReduce.setNextTestData(mockData);
-			this.mockReduce.run(mapReduce);
-			expect(this.mapMock.run.calls.count()).toEqual(1);
-			expect(this.reduceMock.run.calls.count()).toEqual(1);
+    beforeEach(function() {
+      spyOn(this.mapMock, "run");
+      spyOn(this.reduceMock, "run").and.returnValue("reduce.run did run");
+    });
 
-			this.mapMock.run.calls.reset();
-			this.reduceMock.run.calls.reset();
+    describe("mongoose style", function() {
+      it("calls all the mocks since it simply wraps run when providing a mapReduce object", function() {
+        this.mockReduce.setNextTestData(mockData);
+        this.mockReduce.mapReduce(mapReduce);
+        expect(this.mapMock.run.calls.count()).toEqual(1);
+        // finalize also calls reduce.run
+        expect(this.reduceMock.run.calls.count()).toEqual(2);
+      });
 
-			var actual = this.mockReduce.run(mapReduce);
-			expect(this.mapMock.run.calls.count()).toEqual(0);
-			expect(this.reduceMock.run.calls.count()).toEqual(0);
-			expect(actual).toEqual([]);
-		});
+      it("calls the callback", function() {
+        var callbackSpy = {
+          run: function() {}
+        };
+        spyOn(callbackSpy, "run");
+        this.mockReduce.setNextTestData(mockData);
+        this.mockReduce.mapReduce(mapReduce, callbackSpy.run);
+        expect(callbackSpy.run).toHaveBeenCalled();
+      });
 
-		it('exposes and conceals all given scope variables', function() {
-			var mapReduce = {
-				scope: {
-					value: "does not matter"
-				},
-				map: function() {},
-				reduce: function() {}
-			};
+      it("returns the data", function() {
+        this.mockReduce.setNextTestData(mockData);
+        var result = this.mockReduce.mapReduce(mapReduce);
+        expect(result).toEqual("reduce.run did run");
+      });
+    });
 
-			spyOn(this.scopeMock, 'expose');
-			spyOn(this.scopeMock, 'concealAll');
+    describe("native driver style", function() {
+      it("calls map and reduce", function() {
+        this.mockReduce.setNextTestData(mockData);
+        this.mockReduce.mapReduce(mapReduce.map, mapReduce.reduce);
+        expect(this.mapMock.run.calls.count()).toEqual(1);
+        // finalize also calls reduce.run
+        expect(this.reduceMock.run.calls.count()).toEqual(1);
+      });
 
-			var mockData = [
-				{first: "data"}
-			];
+      it("calls map, reduce and finalize", function() {
+        var options = {
+          finalize: mapReduce.finalize
+        };
 
-			this.mockReduce.setNextTestData(mockData);
-			this.mockReduce.run(mapReduce);
-			expect(this.scopeMock.expose).toHaveBeenCalledWith(mapReduce.scope);
-			expect(this.scopeMock.concealAll).toHaveBeenCalled();
-		});
+        this.mockReduce.setNextTestData(mockData);
+        this.mockReduce.mapReduce(mapReduce.map, mapReduce.reduce, options);
+        expect(this.mapMock.run.calls.count()).toEqual(1);
+        // finalize also calls reduce.run
+        expect(this.reduceMock.run.calls.count()).toEqual(2);
+      });
 
-		it('calls the callback with the final data if defined', function() {
-		    var mapReduce = {
-				map: function () {},
-				reduce: function() {}
-			};
-			var callbackSpy = {
-				run: function() {}
-			};
-			spyOn(this.reduceMock, 'run').and.returnValue(reducedData);
-			spyOn(callbackSpy, 'run');
-			this.mockReduce.setNextTestData(mockData);
-			this.mockReduce.run(mapReduce, callbackSpy.run);
-			expect(callbackSpy.run).toHaveBeenCalledWith(null, reducedData);
-		});
-	});
+      it("calls the callback", function() {
+        var callbackSpy = {
+          run: function() {}
+        };
+        spyOn(callbackSpy, "run");
 
-	describe('#mapReduce', function () {
-		var mockData = [{}];
+        this.mockReduce.setNextTestData(mockData);
+        this.mockReduce.mapReduce(
+          mapReduce.map,
+          mapReduce.reduce,
+          null,
+          callbackSpy.run
+        );
+        expect(callbackSpy.run).toHaveBeenCalled();
+      });
 
-		var mapReduce = {
-			map: function() {},
-			reduce: function() {},
-			finalize: function() {}
-		};
+      it("sets the scope vars", function() {
+        var options = {
+          scope: {
+            value: "unimportant"
+          }
+        };
 
-		beforeEach(function() {
-			spyOn(this.mapMock, 'run');
-			spyOn(this.reduceMock, 'run').and.returnValue('reduce.run did run');
-		});
+        spyOn(this.scopeMock, "expose");
+        spyOn(this.scopeMock, "concealAll");
 
-		describe('mongoose style', function() {
-			it('calls all the mocks since it simply wraps run when providing a mapReduce object', function() {
-				this.mockReduce.setNextTestData(mockData);
-				this.mockReduce.mapReduce(mapReduce);
-				expect(this.mapMock.run.calls.count()).toEqual(1);
-				// finalize also calls reduce.run
-				expect(this.reduceMock.run.calls.count()).toEqual(2);
-			});
+        this.mockReduce.setNextTestData(mockData);
+        this.mockReduce.mapReduce(mapReduce.map, mapReduce.reduce, options);
+        expect(this.scopeMock.expose).toHaveBeenCalledWith(options.scope);
+        expect(this.scopeMock.concealAll).toHaveBeenCalled();
+      });
+    });
+  });
 
-			it('calls the callback', function () {
-				var callbackSpy = {
-					run: function() {}
-				};
-				spyOn(callbackSpy, 'run');
-				this.mockReduce.setNextTestData(mockData);
-				this.mockReduce.mapReduce(mapReduce, callbackSpy.run);
-				expect(callbackSpy.run).toHaveBeenCalled();
-			});
+  describe("#install", function() {
+    it("throws an exception if no installer is set", function() {
+      var me = this;
+      var spec = function() {
+        me.mockReduce.install();
+      };
+      expect(spec).toThrow("No installer defined");
+    });
 
-			it('returns the data', function() {
-				this.mockReduce.setNextTestData(mockData);
-				var result = this.mockReduce.mapReduce(mapReduce);
-				expect(result).toEqual('reduce.run did run');
-			});
-		});
+    it("calls the installer#install if present", function() {
+      const installerMock = jasmine.createSpyObj('installer', ['install', 'uninstall']);
+      const connectorMock = jasmine.createSpyObj('connector', ['connect']);
+      
+      this.mockReduce.setInstaller(installerMock);
+      this.mockReduce.install(connectorMock);
+      
+      expect(installerMock.install).toHaveBeenCalledWith(
+        connectorMock,
+        this.mockReduce
+      );
+      
+      this.mockReduce.uninstall();
+    });
+  });
 
-		describe('native driver style', function() {
-			it('calls map and reduce', function () {
-				this.mockReduce.setNextTestData(mockData);
-				this.mockReduce.mapReduce(mapReduce.map, mapReduce.reduce);
-				expect(this.mapMock.run.calls.count()).toEqual(1);
-				// finalize also calls reduce.run
-				expect(this.reduceMock.run.calls.count()).toEqual(1);
-			});
+  describe("#uninstall", function() {
+    it("throws an exception if no installer is set", function() {
+      var me = this;
+      var spec = function() {
+        me.mockReduce.uninstall();
+      };
+      expect(spec).toThrow("No installer defined");
+    });
 
-			it('calls map, reduce and finalize', function () {
-				var options = {
-					finalize: mapReduce.finalize
-				};
-
-				this.mockReduce.setNextTestData(mockData);
-				this.mockReduce.mapReduce(mapReduce.map, mapReduce.reduce, options);
-				expect(this.mapMock.run.calls.count()).toEqual(1);
-				// finalize also calls reduce.run
-				expect(this.reduceMock.run.calls.count()).toEqual(2);
-			});
-
-			it('calls the callback', function () {
-				var callbackSpy = {
-					run: function() {}
-				};
-				spyOn(callbackSpy, 'run');
-
-				this.mockReduce.setNextTestData(mockData);
-				this.mockReduce.mapReduce(mapReduce.map, mapReduce.reduce, null, callbackSpy.run);
-				expect(callbackSpy.run).toHaveBeenCalled();
-			});
-
-			it('sets the scope vars', function() {
-				var options = {
-					scope: {
-						value: "unimportant"
-					}
-				};
-
-				spyOn(this.scopeMock, 'expose');
-				spyOn(this.scopeMock, 'concealAll');
-
-				this.mockReduce.setNextTestData(mockData);
-				this.mockReduce.mapReduce(mapReduce.map, mapReduce.reduce, options);
-				expect(this.scopeMock.expose).toHaveBeenCalledWith(options.scope);
-				expect(this.scopeMock.concealAll).toHaveBeenCalled();
-			});
-		});
-	});
-
-	describe('#init', function() {
-	    it('creates a scope object with map, mock and scope instances', function() {
-			var globalScope;
-			if (typeof window != 'undefined') {
-				globalScope = window;
-			} else if (typeof global != 'undefined') {
-				globalScope = global;
-			} else {
-				globalScope = {};
-			}
-
-	        var map = new MockReduceMap(new Scope(globalScope));
-	        var reduce = new Reduce();
-	        var scope = new Scope(globalScope);
-
-			var mockReduce = MockReduce.init();
-			expect(mockReduce.map).toEqual(map);
-			expect(mockReduce.reduce).toEqual(reduce);
-			expect(mockReduce._scope).toEqual(scope);
-	    });
-	});
-
-	describe('#install', function() {
-		it('throws an exception if no installer is set', function() {
-			var me = this;
-			var spec = function() {
-				me.mockReduce.install();
-			};
-			expect(spec).toThrow('No installer defined');
-		});
-
-		it('calls the installer#install if present', function () {
-			var installerMock = {
-				install: function() {}
-			};
-			var connectorMock = {
-				connect: function() {}
-			};
-			spyOn(installerMock, 'install');
-			this.mockReduce.setInstaller(installerMock);
-			this.mockReduce.install(connectorMock);
-			expect(installerMock.install).toHaveBeenCalledWith(connectorMock, this.mockReduce);
-		})
-	});
-
-	describe('#uninstall', function() {
-		it('throws an exception if no installer is set', function() {
-			var me = this;
-			var spec = function() {
-				me.mockReduce.uninstall();
-			};
-			expect(spec).toThrow('No installer defined');
-		});
-
-		it('calls the installer#uninstall if present', function () {
-			var installerMock = {
-				uninstall: function() {}
-			};
-			var connectorMock = {
-				connect: function() {}
-			};
-			spyOn(installerMock, 'uninstall');
-			this.mockReduce.setInstaller(installerMock);
-			this.mockReduce.uninstall(connectorMock);
-			expect(installerMock.uninstall).toHaveBeenCalled();
-		})
-	});
+    it("calls the installer#uninstall if present", function() {
+      const installerMock = jasmine.createSpyObj('installer', ['install', 'uninstall']);
+      const connectorMock = jasmine.createSpyObj('connector', ['connect']);
+      
+      this.mockReduce.setInstaller(installerMock);
+      this.mockReduce.uninstall(connectorMock);
+      
+      expect(installerMock.uninstall).toHaveBeenCalled();
+    });
+  });
 });

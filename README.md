@@ -113,6 +113,8 @@ npm test
 - Security: Fix security vulnerabilities in mongoose and karma dependencies
 - Change: Do not put MockReduce and all subclasses into global scope but instead use require
 - Bugfix: Make sure index.js is required uncached in tests
+- Update: Bump mongoose to version 5.7.10
+- Update: Bump jasmine to version 3.5.0
 
 ### 0.0.5
 - Bugfix: Don't break when connect is called without a callback

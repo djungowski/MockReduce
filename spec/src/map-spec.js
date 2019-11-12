@@ -1,3 +1,7 @@
+const MockReduce = require('../../src/mock-reduce');
+const Scope = require('../../src/scope');
+const MockReduceMap = require('../../src/map');
+
 describe('Map tests', function () {
 	beforeEach(function() {
 		if (typeof window != 'undefined') {
@@ -8,12 +12,8 @@ describe('Map tests', function () {
 			this.globalScope = {};
 		}
 
-		this.scopeMock = new MockReduce.Scope(this.globalScope);
-	    this.map = new MockReduce.Map(this.scopeMock);
-	});
-
-	it('exists', function() {
-		expect(MockReduce.Map).not.toBeUndefined();
+		this.scopeMock = new Scope(this.globalScope);
+	    this.map = new MockReduceMap(this.scopeMock);
 	});
 
 	describe('#run', function() {

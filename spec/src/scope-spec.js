@@ -1,11 +1,9 @@
-describe('Scope tests', function() {
-    it('exists', function() {
-        expect(MockReduce.Scope).not.toBeUndefined();
-    });
+const Scope = require('../../src/scope');
 
+describe('Scope tests', function() {
 	beforeEach(function() {
 		this.scopeMock = {};
-		this.scope = new MockReduce.Scope(this.scopeMock);
+		this.scope = new Scope(this.scopeMock);
 	});
 
 	var scopeVars = {

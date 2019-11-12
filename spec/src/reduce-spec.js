@@ -1,10 +1,8 @@
-describe('Reduce tests', function() {
-	it('exists', function() {
-		expect(MockReduce.Reduce).not.toBeUndefined();
-	});
+const Reduce = require('../../src/reduce');
 
+describe('Reduce tests', function() {
 	beforeEach(function() {
-	    this.reduce = new MockReduce.Reduce();
+	    this.reduce = new Reduce();
 	});
 
 	describe('#run', function() {

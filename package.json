@@ -4,7 +4,7 @@
   "description": "A mock for mongodbs/mongoose's mapReduce in order to achieve testability",
   "main": "index.js",
   "scripts": {
-    "test": "node_modules/jasmine/bin/jasmine.js"
+    "test": "jasmine"
   },
   "repository": {
     "type": "git",

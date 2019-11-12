@@ -1,13 +1,11 @@
+const Installer = require('../../src/installer');
+
 describe('Install spec', function () {
 	beforeEach(function() {
-	    this.installer = new MockReduce.Installer();
+	    this.installer = new Installer();
 		this.mockReduceMock = {
 			mapReduce: function() {}
 		};
-	});
-
-	it('exists', function() {
-		expect(MockReduce.Installer).not.toBeUndefined();
 	});
 
 	describe('#install', function() {

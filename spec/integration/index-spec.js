@@ -1,3 +1,9 @@
+const MockReduce = require('../../src/mock-reduce');
+const MockReduceMap = require('../../src/map');
+const Reduce = require('../../src/reduce');
+const Scope = require('../../src/scope');
+const Installer = require('../../src/installer');
+
 describe('index.js test', function () {
 	it('creates a MockReduce instance when requiring, requires all needed modules', function() {
 		var mockReduce = require('../../index');
@@ -11,12 +17,12 @@ describe('index.js test', function () {
 			globalScope = {};
 		}
 		
-		var map = new MockReduce.Map(new MockReduce.Scope(globalScope));
-		var reduce = new MockReduce.Reduce();
-		var scope = new MockReduce.Scope(globalScope);
+		var map = new MockReduceMap(new Scope(globalScope));
+		var reduce = new Reduce();
+		var scope = new Scope(globalScope);
 		var expected = new MockReduce(map, reduce, scope);
 
-		var installer = new MockReduce.Installer();
+		var installer = new Installer();
 		expected.setInstaller(installer);
 
 		expect(mockReduce).toEqual(expected);

@@ -1,9 +1,6 @@
-require('./src/mock-reduce');
-require('./src/scope');
-require('./src/map');
-require('./src/reduce');
-require('./src/installer');
+const MockReduce = require('./src/mock-reduce');
+const Installer = require('./src/installer')
 
 var mockReduce = MockReduce.init();
-mockReduce.setInstaller(new MockReduce.Installer());
+mockReduce.setInstaller(new Installer());
 module.exports = mockReduce;

@@ -1,7 +1,4 @@
 language: node_js
 
-node_js:
-  - "4.2"
-
 sudo: required
-dist: trusty
+dist: xenial

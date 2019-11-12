@@ -109,6 +109,11 @@ npm test
 ```
 
 ## Changelog
+### 0.1.0
+- Security: Fix security vulnerabilities in mongoose and karma dependencies
+- Change: Do not put MockReduce and all subclasses into global scope but instead use require
+- Bugfix: Make sure index.js is required uncached in tests
+
 ### 0.0.5
 - Bugfix: Don't break when connect is called without a callback
 

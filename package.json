@@ -26,9 +26,10 @@
     "url": "https://github.com/djungowski/MockReduce/issues"
   },
   "homepage": "https://github.com/djungowski/MockReduce",
-  "dependencies": {},
+  "dependencies": {
+    "mongoose": "^5.7.10"
+  },
   "devDependencies": {
-    "jasmine": "^3.5.0",
-    "mongoose": "^5.7.6"
+    "jasmine": "^3.5.0"
   }
 }
